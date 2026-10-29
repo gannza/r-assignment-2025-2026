@@ -1,0 +1,145 @@
+---
+title: "R-Assignment"
+author: "Ganza"
+date: "2026-10-21"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+```
+
+```{r install-package}
+install.packages(
+  c("rmarkdown","haven",
+    "DBI", "RMariaDB", "jsonlite"),
+  repos = "https://cloud.r-project.org"
+)
+```
+
+
+## R Markdown
+Import data from Statistical packages and from Database Management Systems.
+
+R provides functions and packages that allow you to load data, analyze it, and create visualizations.
+
+
+### 1. Importing data from statistical packages
+
+Statistical software often saves data in specific file formats.
+
+
+First, install and load the haven package.
+
+```{r import-stata}
+library(haven)
+
+file_path <- "D:\\Document\\BIG-DATA\\R\\Assignment\\data\\"
+```
+
+### Importing Stata data
+
+```{r import-dta-data}
+data <- read_dta(file.path(file_path, "survey.dta"))
+View(data)
+head(data)
+```
+
+```{r}
+summary(data)
+```
+
+### Importing a CSV file
+
+CSV files are common in statistical analysis.
+
+```{r import-csv-data}
+data <- read.csv(file.path(file_path, "students.csv"))
+
+View(data)
+```
+
+Get Top 6 rows
+```{r}
+head(data)
+```
+Get CSV Summary
+
+```{r}
+summary(data)
+```
+### 2. Importing data from a Database Management System (DBMS)
+
+
+A DBMS stores structured data in tables. R can connect to a database, execute SQL queries, and retrieve the results into a data frame.
+Common database systems include:
+- MySQL
+- PostgreSQL
+- Microsoft SQL Server
+- Oracle Database
+- SQLite
+
+
+### Importing data from MySQL
+
+Install the package:
+
+
+```{r import-mysql-data}
+library(DBI)
+library(RMariaDB)
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  dbname = "PayrollDB",
+  host = "localhost",
+  port = 3306,
+  user = "root",
+  password = "Password123!"
+)
+
+employees <- dbGetQuery(
+  con,
+      "SELECT e.EmployeeID, d.DepartmentName, p.PositionName, e.EmploymentDate,   e.EmploymentDate, e.Status
+     FROM payrolldb.employees e
+    JOIN payrolldb.positions p on p.PositionID=e.PositionID
+    JOIN payrolldb.departments d on d.DepartmentID=e.DepartmentID
+;"
+)
+
+View(employees)
+
+dbDisconnect(con)
+
+```
+
+```{r}
+head(employees)
+```
+
+
+### 3. Import data from a public API
+
+```{r}
+
+library(jsonlite)
+
+users <- fromJSON(
+  "https://jsonplaceholder.typicode.com/users"
+)
+
+View(users)
+
+```
+
+```{r}
+head(users)
+```

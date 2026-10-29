@@ -1,0 +1,478 @@
+---
+title: "R Assignment: Importing Data into R"
+author: "Ganza Jean Respice"
+date: "2026-10-21"
+published: "https://rpubs.com/ganza/1469648"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+```{r}
+Sys.setenv(
+  DB_USER = "root",
+  DB_PASSWORD = "Password123!",
+  DB_HOST = "localhost"
+)
+```
+# Introduction
+
+R is a programming language and statistical computing environment used for data manipulation, statistical analysis, and visualization. One of the first steps in data analysis is importing data from different sources into R.
+
+This assignment demonstrates how to import data from statistical software, flat files, relational database management systems (DBMS), and public APIs.
+
+The objectives are to:
+
+1. Import Stata data files (`.dta`).
+2. Import CSV files (`.csv`).
+3. Import SPSS data files (`.sav`).
+4. Import SAS data files (`.sas7bdat`).
+5. Connect to a MySQL database and retrieve records using SQL.
+6. Import JSON data from a public REST API.
+7. Inspect imported datasets using R functions.
+
+# Preparation and Required Packages
+
+## Required packages
+
+R packages extend the functionality of the R environment. The following packages are required for this assignment.
+
+Package
+
+`haven`: Imports data from Stata, SPSS, and SAS.
+`DBI`: Provides a standard interface for connecting to databases.
+`RMariaDB`: Connects R to MySQL-compatible and MariaDB database servers.
+`jsonlite` | Converts JSON data into R objects.
+`rmarkdown` | Generates reports in HTML and PDF formats.
+
+Install the packages once by running the following code in the R console. Package installation is not required every time the report is generated.
+
+```{r installing-libs}
+install.packages(
+  c("rmarkdown", "haven", "DBI", "RMariaDB", "jsonlite"),
+  repos = "https://cloud.r-project.org"
+)
+```
+
+## Load the required packages
+
+The following setup chunk loads the packages needed for the assignment and configures the report.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
+library(haven)
+library(DBI)
+library(RMariaDB)
+library(jsonlite)
+```
+
+## Define the data directory
+
+The datasets used in this assignment are stored in a local directory on the computer.
+
+```{r define-data-directory}
+file_path <- "D:/Document/BIG-DATA/R/Assignment/data/"
+
+# Check whether the directory exists
+dir.exists(file_path)
+
+# List the files available in the directory
+list.files(file_path)
+```
+
+The `file_path` variable stores the directory containing the local datasets. The `dir.exists()` function checks whether the directory is available, while `list.files()` displays its contents.
+
+The following files are expected:
+
+- `survey.dta`
+- `students.csv`
+- `student_scores.sas7bdat`
+
+The SPSS example in Section 4 is downloaded from a public GitHub URL.
+
+# Importing Data from Stata
+
+## Introduction to Stata files
+
+Stata is statistical software commonly used in economics, social sciences, public policy, and research. It stores datasets in files with the `.dta` extension.
+
+The `haven` package provides the `read_dta()` function for importing Stata datasets into R.
+
+## Import the Stata dataset
+
+```{r import-stata}
+stata_data <- read_dta(
+  file.path(file_path, "survey.dta")
+)
+head(stata_data)
+```
+
+## Examine the imported data
+
+```{r inspect-top-data}
+# Display the first six rows
+head(stata_data)
+
+```
+```{r inspect-structure}
+# Display the structure and variable types
+str(stata_data)
+
+```
+
+```{r inspect-rows-and-columns}
+# Display the number of rows and columns
+dim(stata_data)
+```
+
+```{r inspect-variables}
+# Display the column names
+names(stata_data)
+```
+
+## Explanation
+
+- `read_dta()` reads the Stata file and returns an R data frame or tibble.
+- `head()` displays the first six rows by default.
+- `str()` displays the dataset's structure, including variable names and data types.
+- `dim()` returns the number of rows and columns.
+- `names()` returns the variable names.
+
+**Result:** The Stata dataset is available in R for further processing and statistical analysis.
+
+# Importing Data from CSV
+
+## Introduction to CSV files
+
+CSV stands for Comma-Separated Values. A CSV file stores tabular data as text, with records typically separated by line breaks and fields separated by commas.
+
+CSV is widely used because it is supported by spreadsheet applications, databases, statistical software, and programming languages.
+
+R provides the built-in `read.csv()` function, so an additional package is not required.
+
+## Import the CSV dataset
+
+```{r import-csv}
+csv_data <- read.csv(
+  file.path(file_path, "students.csv"),
+  header = TRUE,
+  stringsAsFactors = FALSE
+)
+
+```
+
+## Examine the imported data
+
+```{r inspect-csv-six-rows}
+# Display the first six rows
+head(csv_data)
+
+```
+
+```{r inspect-csv-structure}
+# Examine variable types and structure
+str(csv_data)
+
+```
+
+```{r inspect-csv-rows-columns}
+# Count rows and columns
+dim(csv_data)
+
+```
+
+```{r inspect-csv-variables}
+# Display column names
+names(csv_data)
+```
+
+## Explanation
+
+- `read.csv()` reads the CSV file into R.
+- `header = TRUE` indicates that the first row contains column names.
+- `stringsAsFactors = FALSE` prevents character columns from automatically being converted into factors in R versions where this setting applies.
+- `head(csv_data)` displays the first six records.
+
+**Result:** The CSV file is imported into an R object named `csv_data`.
+
+
+# Importing Data from SPSS
+
+## Introduction to SPSS files
+
+SPSS (Statistical Package for the Social Sciences) is statistical software used for survey analysis, social research, and other forms of quantitative analysis.
+
+SPSS datasets commonly use the `.sav` extension. These files may contain variable labels, value labels, and other metadata.
+
+The `haven` package provides the `read_sav()` function for reading SPSS files.
+
+## Import an SPSS dataset from GitHub
+
+The following example uses the Iris dataset provided in the `haven` package's public GitHub repository.
+
+```{r import-spss}
+sav_url <- paste0(
+  "https://raw.githubusercontent.com/tidyverse/haven/",
+  "HEAD/inst/examples/iris.sav"
+)
+
+iris_spss <- read_sav(sav_url)
+
+head(iris_spss)
+```
+
+## Examine the imported data
+
+```{r inspect-spss}
+# Display the first six rows
+head(iris_spss)
+
+# Examine the structure
+str(iris_spss)
+
+# Count rows and columns
+dim(iris_spss)
+
+# Display variable names
+names(iris_spss)
+```
+
+## Explanation
+
+- `sav_url` stores the URL of the SPSS file.
+- `read_sav()` downloads and reads the file into R.
+- `head()` displays the first six observations.
+- `str()` displays the variable types and structure.
+
+**Result:** The SPSS dataset is imported into an R object named `iris_spss`.
+
+**Note:** An internet connection is required to retrieve the file from GitHub.
+
+# Importing Data from SAS
+
+## Introduction to SAS files
+
+SAS (Statistical Analysis System) is software used for statistical analysis, data management, and business intelligence.
+
+SAS datasets can be stored in files with the `.sas7bdat` extension. The `haven` package provides the `read_sas()` function to import these files.
+
+## Import the SAS dataset
+
+```{r import-sas}
+sas_data <- read_sas(
+  file.path(file_path, "student_scores.sas7bdat")
+)
+
+head(sas_data)
+```
+
+## Examine the imported data
+
+```{r inspect-sas}
+# Display the first six rows
+head(sas_data)
+
+# Examine variable types
+str(sas_data)
+
+# Count rows and columns
+dim(sas_data)
+
+# Display variable names
+names(sas_data)
+```
+
+## Explanation
+
+- `read_sas()` reads the SAS dataset into R.
+- `file.path()` constructs the file path using the data directory and filename.
+- `head()` displays the first six observations.
+- `str()` provides information about the dataset's variables and structure.
+
+**Result:** The SAS dataset is imported into an R object named `sas_data`.
+
+# Importing Data from a Database Management System
+
+## Introduction to DBMS
+
+A Database Management System (DBMS) is software used to store, organize, retrieve, and manage data.
+
+Common database management systems include:
+
+- MySQL
+- MariaDB
+- PostgreSQL
+- Microsoft SQL Server
+- Oracle Database
+- SQLite
+
+Unlike CSV and statistical data files, a database usually requires a connection before data can be retrieved.
+
+R can connect to databases, execute SQL statements, and return query results as data frames.
+
+## Required packages
+
+The following packages are used for database connectivity:
+
+- `DBI`: Defines a common interface for database operations.
+- `RMariaDB`: Provides a database driver for MySQL-compatible and MariaDB servers.
+
+```{r database-packages}
+library(DBI)
+library(RMariaDB)
+```
+
+## Connect to the MySQL database
+
+The following example assumes that a MySQL-compatible database named `PayrollDB` is running on the local computer.
+
+For security, database credentials should be stored in environment variables rather than written directly into an assignment or report.
+
+```{r connect-mysql}
+db_host <- Sys.getenv("DB_HOST", unset = "localhost")
+db_name <- "PayrollDB"
+db_user <- Sys.getenv("DB_USER")
+db_password <- Sys.getenv("DB_PASSWORD")
+
+if (db_user == "" || db_password == "") {
+  stop(
+    "Set the DB_USER and DB_PASSWORD environment variables ",
+    "before running this section."
+  )
+}
+
+con <- dbConnect(
+  RMariaDB::MariaDB(),
+  dbname = db_name,
+  host = db_host,
+  port = 3306,
+  user = db_user,
+  password = db_password
+)
+
+dbIsValid(con)
+```
+
+The `dbConnect()` function establishes the connection to the database.
+
+The `dbIsValid()` function checks whether the connection is valid.
+
+Before running this section, configure the `DB_USER`, `DB_PASSWORD`, and, if necessary, `DB_HOST` environment variables on your computer.
+
+## Retrieve employee information using SQL
+
+The following query retrieves employee information together
+
+```{r execute list of employees}
+employees <- tryCatch(
+  {
+    dbGetQuery(
+      con,
+      "
+      SELECT
+          e.EmployeeID,
+          d.DepartmentName,
+          p.PositionName,
+          e.EmploymentDate,
+          e.Status
+      FROM Employees AS e
+      INNER JOIN Positions AS p
+          ON p.PositionID = e.PositionID
+      INNER JOIN Departments AS d
+          ON d.DepartmentID = e.DepartmentID
+      "
+    )
+  },
+  finally = {
+    dbDisconnect(con)
+  }
+)
+
+head(employees)
+```
+
+
+This example assumes that the Employees, Positions, and Departments tables are available in the PayrollDB database and have the specified columns.
+
+## Examine the retrieved data
+
+```{r}
+# Display the first six records
+head(employees)
+
+# Examine the data structure
+str(employees)
+
+# Count rows and columns
+dim(employees)
+
+# Display column names
+names(employees)
+```
+
+# Importing Data from a Public REST API
+
+## Introduction to APIs
+
+An Application Programming Interface (API) allows one software application to communicate with another.
+
+A REST API commonly exposes resources through HTTP endpoints. Data is often returned in JSON (JavaScript Object Notation) format.
+
+JSON is a lightweight data-interchange format that represents objects, arrays, strings, numbers, Boolean values, and null values.
+
+The jsonlite package provides functions for converting JSON responses into R objects.
+
+## Retrieve data from a public API
+
+This example uses JSONPlaceholder, a public demonstration API that provides sample user records.
+
+```{r import-data-from-json}
+library(jsonlite)
+
+api_url <- "https://jsonplaceholder.typicode.com/users"
+
+users <- fromJSON(api_url)
+
+head(users)
+
+```
+
+
+## Examine the API data
+
+```{r}
+# Display the first six users
+head(users)
+
+# Examine the structure
+str(users)
+
+# Count the records and columns
+dim(users)
+
+# Display column names
+names(users)
+
+```
+
+# Conclusion
+
+This assignment demonstrates how R imports data from different statistical packages, local files, relational databases, and public APIs.
+
+The haven package supports Stata, SPSS, and SAS formats, while base R provides functions for importing CSV files. The DBI and RMariaDB packages enable database connectivity and SQL-based retrieval. The jsonlite package supports importing JSON data from REST APIs.
+
+Understanding these methods is essential for data preparation, statistical analysis, business intelligence, and data analytics. Selecting the appropriate import method depends on the source of the data, its structure, the required metadata, and the way the data will be used in subsequent analysis.
+
+

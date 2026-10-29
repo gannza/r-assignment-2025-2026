@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1469648/6f264349bf1949309b072ed6bc10d293
+bundleId: https://api.rpubs.com/api/v1/document/1469648/6f264349bf1949309b072ed6bc10d293
+url: http://rpubs.com/ganza/1469648
+version: 1
