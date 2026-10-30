@@ -58,6 +58,8 @@ Note that the echo = FALSE parameter was added to the code chunk to prevent prin
 
 Understanding the plot() function
 
+
+
 temperature: Data for the X-axis
 
 pressure : Data for the Y-axis
@@ -70,6 +72,8 @@ ylab: X-asis label
 
 pch = 1 : Displays hollow circular points
 
+
+
 You can customize the graph using:
 
 pch = 19: Solid circles.
@@ -78,7 +82,10 @@ col = "blue": Blue points.
 
 cex = 1.2: Increases point size.
 
+
+
 # Important definitions in data science
+
 
 Statistics
 
@@ -91,7 +98,9 @@ Computation
 
 Calculus
 
+
 # Today’s class,we will study
+
 
 Installation of R
 
@@ -102,6 +111,7 @@ Calculator in r
 Data importation in R
 
 Data description using numerical measures and graphs.
+
 
 # Data structure (Vectors, Factors, Lists, Data frame, matrix and arrays)
 
