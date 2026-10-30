@@ -55,28 +55,40 @@ plot(
 
 Note that the echo = FALSE parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-====================================================
+
 Understanding the plot() function
-====================================================
 
 temperature: Data for the X-axis
+
 pressure : Data for the Y-axis
+
 main: Graph title
+
 xlab: X-axis label
+
 ylab: X-asis label
+
 pch = 1 : Displays hollow circular points
 
 You can customize the graph using:
 
 pch = 19: Solid circles.
+
 col = "blue": Blue points.
+
 cex = 1.2: Increases point size.
 
 # Important definitions in data science
 
 Statistics
+
+
 Modelling
+
+
 Computation
+
+
 Calculus
 
 # Today’s class,we will study
@@ -91,7 +103,7 @@ Data importation in R
 
 Data description using numerical measures and graphs.
 
-#Data structure (Vectors, Factors, Lists, Data frame, matrix and arrays)
+# Data structure (Vectors, Factors, Lists, Data frame, matrix and arrays)
 
 Vector: The foundational R data structure
 
