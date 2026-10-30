@@ -1,0 +1,102 @@
+---
+title: "R for data science class 1"
+author: "20252MBI004 - Ganza Jean Respice"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+# Introduction
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
+
+When you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+
+# Summary is a built in function used to generate a statistic summary of a dataset.
+
+# Here we need to get summary of cars dataset.
+
+summary(cars)
+
+```
+# Including Plots
+
+You can also embed plots, for example:
+
+```{r}
+# Create temperature data
+temperature <- seq(0, 360, by = 20)
+
+# Create pressure data
+pressure <- c(
+  0, 0, 0, 0, 0, 0, 0, 0,
+  5, 10, 18, 32, 55, 95, 155,
+  245, 375, 560, 805
+)
+# Generate scatter plot
+plot(
+  temperature,
+  pressure,
+  main = "Temperature vs Pressure",
+  xlab = "temperature",
+  ylab = "pressure",
+  pch = 1
+)
+
+```
+
+Note that the echo = FALSE parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+====================================================
+Understanding the plot() function
+====================================================
+
+temperature: Data for the X-axis
+pressure : Data for the Y-axis
+main: Graph title
+xlab: X-axis label
+ylab: X-asis label
+pch = 1 : Displays hollow circular points
+
+You can customize the graph using:
+
+pch = 19: Solid circles.
+col = "blue": Blue points.
+cex = 1.2: Increases point size.
+
+# Important definitions in data science
+
+Statistics
+Modelling
+Computation
+Calculus
+
+# Today’s class,we will study
+
+Installation of R
+
+Installation of R studio
+
+Calculator in r
+
+Data importation in R
+
+Data description using numerical measures and graphs.
+
+#Data structure (Vectors, Factors, Lists, Data frame, matrix and arrays)
+
+Vector: The foundational R data structure
+
+Numeric
+Example 1
+
+
+

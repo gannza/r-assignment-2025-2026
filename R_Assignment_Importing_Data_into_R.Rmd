@@ -1,8 +1,8 @@
 ---
 title: "R Assignment: Importing Data into R"
-author: "Ganza Jean Respice"
+author: "20252MBI004 - Ganza Jean Respice"
 date: "2026-10-21"
-published: "https://rpubs.com/ganza/1469648"
+published: "https://rpubs.com/ganza/1472158"
 output:
   html_document:
     toc: true

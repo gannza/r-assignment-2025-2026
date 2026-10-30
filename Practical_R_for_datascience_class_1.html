@@ -9,11 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Ganza" />
+<meta name="author" content="20252MBI004 - Ganza Jean Respice" />
 
-<meta name="date" content="2026-10-21" />
+<meta name="date" content="2026-10-30" />
 
-<title>R-Assignment</title>
+<title>R for data science class 1</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,180 +350,26 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R-Assignment</h1>
-<h4 class="author">Ganza</h4>
-<h4 class="date">2026-10-21</h4>
+<h1 class="title toc-ignore">R for data science class 1</h1>
+<h4 class="author">20252MBI004 - Ganza Jean Respice</h4>
+<h4 class="date">2026-10-30</h4>
 
 </div>
 
-
-<pre class="r"><code>install.packages(
-  c(&quot;rmarkdown&quot;,&quot;haven&quot;,
-    &quot;DBI&quot;, &quot;RMariaDB&quot;, &quot;jsonlite&quot;),
-  repos = &quot;https://cloud.r-project.org&quot;
-)</code></pre>
-<pre><code>## package &#39;rmarkdown&#39; successfully unpacked and MD5 sums checked
-## package &#39;haven&#39; successfully unpacked and MD5 sums checked</code></pre>
-<pre><code>## package &#39;DBI&#39; successfully unpacked and MD5 sums checked
-## package &#39;RMariaDB&#39; successfully unpacked and MD5 sums checked</code></pre>
-<pre><code>## package &#39;jsonlite&#39; successfully unpacked and MD5 sums checked</code></pre>
-<pre><code>## 
-## The downloaded binary packages are in
-##  C:\Users\MIFOTRA\AppData\Local\Temp\Rtmpa2SjaG\downloaded_packages</code></pre>
-<div id="r-markdown" class="section level2">
-<h2>R Markdown</h2>
-<p>Import data from Statistical packages and from Database Management
-Systems.</p>
-<p>R provides functions and packages that allow you to load data,
-analyze it, and create visualizations.</p>
-<div id="importing-data-from-statistical-packages" class="section level3">
-<h3>1. Importing data from statistical packages</h3>
-<p>Statistical software often saves data in specific file formats.</p>
-<p>First, install and load the haven package.</p>
-<pre class="r"><code>library(haven)
-
-file_path &lt;- &quot;D:\\Document\\BIG-DATA\\R\\Assignment\\data\\&quot;</code></pre>
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+</ul>
 </div>
-<div id="importing-stata-data" class="section level3">
-<h3>Importing Stata data</h3>
-<pre class="r"><code>data &lt;- read_dta(file.path(file_path, &quot;survey.dta&quot;))
-View(data)
-head(data)</code></pre>
-<pre><code>## # A tibble: 6 × 8
-##   student_id name                age gender program     year marks passed
-##        &lt;dbl&gt; &lt;chr&gt;             &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-## 1       1001 Aline Mukamana       20 Female IT             2  78.5      1
-## 2       1002 Jean Uwimana         22 Male   Statistics     3  64        1
-## 3       1003 Eric Niyonzima       19 Male   Business       1  88        1
-## 4       1004 Claudine Ingabire    21 Female IT             2  91.5      1
-## 5       1005 Patrick Habimana     23 Male   Economics      4  72        1
-## 6       1006 Diane Uwamahoro      20 Female Statistics     2  84        1</code></pre>
-<pre class="r"><code>summary(data)</code></pre>
-<pre><code>##    student_id          name         age             gender        program  
-##  Min.   :1001   Length   :10   Min.   :19.0   Length   :10   Length   :10  
-##  1st Qu.:1003   N.unique :10   1st Qu.:20.0   N.unique : 2   N.unique : 4  
-##  Median :1006   N.blank  : 0   Median :21.0   N.blank  : 0   N.blank  : 0  
-##  Mean   :1006   Min.nchar:12   Mean   :21.1   Min.nchar: 4   Min.nchar: 2  
-##  3rd Qu.:1008   Max.nchar:19   3rd Qu.:22.0   Max.nchar: 6   Max.nchar:10  
-##  Max.   :1010                  Max.   :24.0                                
-##       year         marks           passed   
-##  Min.   :1.0   Min.   :59.50   Min.   :0.0  
-##  1st Qu.:2.0   1st Qu.:69.75   1st Qu.:1.0  
-##  Median :2.0   Median :77.25   Median :1.0  
-##  Mean   :2.4   Mean   :77.75   Mean   :0.9  
-##  3rd Qu.:3.0   3rd Qu.:87.00   3rd Qu.:1.0  
-##  Max.   :4.0   Max.   :95.00   Max.   :1.0</code></pre>
-</div>
-<div id="importing-a-csv-file" class="section level3">
-<h3>Importing a CSV file</h3>
-<p>CSV files are common in statistical analysis.</p>
-<pre class="r"><code>data &lt;- read.csv(file.path(file_path, &quot;students.csv&quot;))
 
-View(data)</code></pre>
-<p>Get Top 6 rows</p>
-<pre class="r"><code>head(data)</code></pre>
-<pre><code>##   student_id              name age gender    program year marks passed
-## 1       1001    Aline Mukamana  20 Female         IT    2  78.5   True
-## 2       1002      Jean Uwimana  22   Male Statistics    3  64.0   True
-## 3       1003    Eric Niyonzima  19   Male   Business    1  88.0   True
-## 4       1004 Claudine Ingabire  21 Female         IT    2  91.5   True
-## 5       1005  Patrick Habimana  23   Male  Economics    4  72.0   True
-## 6       1006   Diane Uwamahoro  20 Female Statistics    2  84.0   True</code></pre>
-<p>Get CSV Summary</p>
-<pre class="r"><code>summary(data)</code></pre>
-<pre><code>##    student_id          name         age             gender        program  
-##  Min.   :1001   Length   :10   Min.   :19.0   Length   :10   Length   :10  
-##  1st Qu.:1003   N.unique :10   1st Qu.:20.0   N.unique : 2   N.unique : 4  
-##  Median :1006   N.blank  : 0   Median :21.0   N.blank  : 0   N.blank  : 0  
-##  Mean   :1006   Min.nchar:12   Mean   :21.1   Min.nchar: 4   Min.nchar: 2  
-##  3rd Qu.:1008   Max.nchar:19   3rd Qu.:22.0   Max.nchar: 6   Max.nchar:10  
-##  Max.   :1010                  Max.   :24.0                                
-##       year         marks             passed  
-##  Min.   :1.0   Min.   :59.50   Length   :10  
-##  1st Qu.:2.0   1st Qu.:69.75   N.unique : 2  
-##  Median :2.0   Median :77.25   N.blank  : 0  
-##  Mean   :2.4   Mean   :77.75   Min.nchar: 4  
-##  3rd Qu.:3.0   3rd Qu.:87.00   Max.nchar: 5  
-##  Max.   :4.0   Max.   :95.00</code></pre>
-</div>
-<div id="importing-data-from-a-database-management-system-dbms" class="section level3">
-<h3>2. Importing data from a Database Management System (DBMS)</h3>
-<p>A DBMS stores structured data in tables. R can connect to a database,
-execute SQL queries, and retrieve the results into a data frame. Common
-database systems include: - MySQL - PostgreSQL - Microsoft SQL Server -
-Oracle Database - SQLite</p>
-</div>
-<div id="importing-data-from-mysql" class="section level3">
-<h3>Importing data from MySQL</h3>
-<p>Install the package:</p>
-<pre class="r"><code>library(DBI)
-library(RMariaDB)
-
-con &lt;- dbConnect(
-  RMariaDB::MariaDB(),
-  dbname = &quot;PayrollDB&quot;,
-  host = &quot;localhost&quot;,
-  port = 3306,
-  user = &quot;root&quot;,
-  password = &quot;Password123!&quot;
-)
-
-employees &lt;- dbGetQuery(
-  con,
-      &quot;SELECT e.EmployeeID, d.DepartmentName, p.PositionName, e.EmploymentDate,   e.EmploymentDate, e.Status
-     FROM payrolldb.employees e
-    JOIN payrolldb.positions p on p.PositionID=e.PositionID
-    JOIN payrolldb.departments d on d.DepartmentID=e.DepartmentID
-;&quot;
-)
-
-View(employees)
-
-dbDisconnect(con)</code></pre>
-<pre class="r"><code>head(employees)</code></pre>
-<pre><code>##   EmployeeID DepartmentName  PositionName EmploymentDate EmploymentDate Status
-## 1          1             IT Finance offer     2026-10-21     2026-10-21 Active
-## 2          3             CS Finance offer     2026-10-21     2026-10-21 Active</code></pre>
-</div>
-<div id="import-data-from-a-public-api" class="section level3">
-<h3>3. Import data from a public API</h3>
-<pre class="r"><code>library(jsonlite)
-
-users &lt;- fromJSON(
-  &quot;https://jsonplaceholder.typicode.com/users&quot;
-)
-
-View(users)</code></pre>
-<pre class="r"><code>head(users)</code></pre>
-<pre><code>##   id                 name         username                     email
-## 1  1        Leanne Graham             Bret         Sincere@april.biz
-## 2  2         Ervin Howell        Antonette         Shanna@melissa.tv
-## 3  3     Clementine Bauch         Samantha        Nathan@yesenia.net
-## 4  4     Patricia Lebsack         Karianne Julianne.OConner@kory.org
-## 5  5     Chelsey Dietrich           Kamren  Lucio_Hettinger@annie.ca
-## 6  6 Mrs. Dennis Schulist Leopoldo_Corkery   Karley_Dach@jasper.info
-##      address.street address.suite  address.city address.zipcode address.geo.lat
-## 1       Kulas Light      Apt. 556   Gwenborough      92998-3874        -37.3159
-## 2     Victor Plains     Suite 879   Wisokyburgh      90566-7771        -43.9509
-## 3 Douglas Extension     Suite 847 McKenziehaven      59590-4157        -68.6102
-## 4       Hoeger Mall      Apt. 692   South Elvis      53919-4257         29.4572
-## 5      Skiles Walks     Suite 351    Roscoeview           33263        -31.8129
-## 6 Norberto Crossing      Apt. 950 South Christy      23505-1337        -71.4197
-##   address.geo.lng                 phone       website       company.name
-## 1         81.1496 1-770-736-8031 x56442 hildegard.org    Romaguera-Crona
-## 2        -34.4618   010-692-6593 x09125 anastasia.net       Deckow-Crist
-## 3        -47.0653        1-463-123-4447   ramiro.info Romaguera-Jacobson
-## 4       -164.2990     493-170-9623 x156      kale.biz      Robel-Corkery
-## 5         62.5342         (254)954-1289  demarco.info        Keebler LLC
-## 6         71.7478  1-477-935-8478 x6430       ola.org  Considine-Lockman
-##                        company.catchPhrase                           company.bs
-## 1   Multi-layered client-server neural-net          harness real-time e-markets
-## 2           Proactive didactic contingency     synergize scalable supply-chains
-## 3        Face to face bifurcated interface      e-enable strategic applications
-## 4 Multi-tiered zero tolerance productivity transition cutting-edge web services
-## 5     User-centric fault-tolerant solution     revolutionize end-to-end systems
-## 6       Synchronised bottom-line interface     e-enable innovative applications</code></pre>
-</div>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>This is an R Markdown document. Markdown is a simple formatting
+syntax for authoring HTML, PDF, and MS Word documents. For more details
+on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the Knit button a document will be generated that
+includes both content as well as the output of any embedded R code
+chunks within the document. You can embed an R code chunk like this:</p>
 </div>
 
 
