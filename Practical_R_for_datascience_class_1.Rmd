@@ -27,7 +27,8 @@ When you click the Knit button a document will be generated that includes both c
 summary(cars)
 
 ```
-# Including Plots
+
+Including Plots
 
 You can also embed plots, for example:
 
@@ -84,7 +85,7 @@ cex = 1.2: Increases point size.
 
 
 
-# Important definitions in data science
+Important definitions in data science
 
 
 Statistics
@@ -99,7 +100,7 @@ Computation
 Calculus
 
 
-# Today’s class,we will study
+Today’s class,we will study
 
 
 Installation of R
@@ -115,10 +116,843 @@ Data description using numerical measures and graphs.
 
 # Data structure (Vectors, Factors, Lists, Data frame, matrix and arrays)
 
-Vector: The foundational R data structure
+## Vector: The foundational R data structure
 
 Numeric
 Example 1
 
+```{r}
+x <- c(0.5, 0.6) 
+age<-c(20,35,32,29)
+summary(age)
+```
 
+Example 2
+
+```{r}
+age<-c(35,24,18,24)
+mean(age)
+```
+Logical
+
+```{r}
+
+x <-c(TRUE, FALSE)
+x <- c(T, F) 
+```
+
+Character
+
+```{r}
+x <- c("a","b","c")
+class <- c('M','F','F','M')
+```
+
+Integer
+
+```{r}
+x <- 9:29
+
+```
+
+Complex
+
+```{r}
+
+x <- c(1+0i, 2+4i)
+
+```
+
+Matrix and operation within matrices
+
+```{r}
+(y<- matrix(1:6, nrow = 2, ncol = 3))
+
+```
+
+```{r}
+y
+```
+
+```{r}
+(z <-matrix(1:6, nrow=3, ncol=2))
+```
+```{r}
+y%*%z
+```
+
+## List
+
+```{r}
+(x<- list(1, "a", TRUE, 1 + 4i))
+```
+```{r}
+x
+```
+## Factor
+
+Factors are useful when your data represents categories
+
+Yes / No
+
+Male / Female
+
+Pass / Fail
+
+Low / Medium / High
+
+```{r}
+
+x<-factor( c("yes","yes","no", "yes", "no") ) 
+```
+
+```{r}
+x
+```
+You can also check the categories using
+
+```{r}
+levels(x)
+```
+
+count how many times each category occurs
+
+```{r}
+table(x)
+```
+
+Create a vector with NAs in it
+
+```{r}
+x <- c(1, 2, NA, 10, 3) 
+
+```
+
+Return a logical vector on which elements is na
+
+```{r}
+is.na(x)
+```
+
+```{r}
+x <-c(1,2,3,NA, 5)
+bad <-is.na(x)
+print(bad)
+```
+```{r}
+x[!bad]
+```
+
+```{r}
+x <-c(1,2,3,"NA", 5)
+bad <-is.na(x)
+print(bad)
+```
+```{r}
+x[!bad]
+```
+
+What if there are multiple R objects and you want to take the subset with no missing values of those objects?
+
+```{r}
+
+x <-c(1,2, NA, 4, NA, 5)
+y <-c("a","b",NA, "d", NA, "f")
+good <-complete.cases(x, y)
+good
+```
+
+## Coercion in R
+
+Coercion means converting a value from one data type to another data type.
+
+For example , R may convert number into characters or logical values into numbers when different type of data are combined
+
+
+Example 1: Automatic coercion
+
+```{r}
+ # Although most values are numbers, "three" is a character. R converts all values to characters:
+x <-c(1,2,"three", 4)
+x
+```
+
+Example 2: Coercion hierarchy
+
+A common coercion order in R is:
+
+logical -> integer -> numeric -> character
+
+```{r}
+
+y<-c(TRUE, 2, 2.5, "Hello")
+
+# The result becomes a character vector:
+y
+```
+
+Example 3: Explicit coercion
+
+You can manually convert data using  functions such as:
+```{r}
+as.numeric("25")
+```
+
+```{r}
+as.numeric("Hello")
+```
+
+If a vector only contains logical and numbers, R will convert the logical to numbers, Every true becomes a 1, and every FALSE becomes 0
+
+```{r}
+sum(c(TRUE,TRUE,FALSE,FALSE,FALSE))
+```
+## Create data
+
+Create data Using data frame Data frame is more general than matrix How??? Because data frame can contain different modes of data (Numeric, character and so on) Similar to what you can see in SPSS, SAS,…
+
+
+Let’s create a data frame
+
+```{r}
+
+studentID <-c("20252MBI001","20252MBI002", "20252MBI003", "20252MBI004","20252MBI005")
+math_score <-c(12,17,10,9,NA)
+gender<-c("M","F","M","M","F")
+it_score<-c(13,18,17,12,19)
+score_data<-data.frame(studentID,gender,math_score,it_score)
+
+score_data
+```
+```{r}
+  View(score_data)
+```
+
+
+## Create data from keyboard
+
+Steps 1. Create data frame (or matrix) with variable names 2. Invoke the text editor in the data objected created at first step
+
+```{r}
+data_class2 <-data.frame(height=numeric(0), weight=numeric(0),bmi=numeric(0))
+data_class2 <- edit(data_class2)
+```
+
+
+# Data Importation
+
+R has some features that can allow you to import data from different sources (it can be text file, spreadsheet, or database)
+
+1. Data from excel
+
+2. Data statistical packages (SAS, SPSS, Stata)
+
+3. Data from Text files (ASCII, XML, Webscraping)
+
+4. Data from database management systems (SQL,MySQL, Oracle, Access)
+
+
+
+## HW1: Import data from Statistical package and from Database management systems
+
+```{r}
+data_class <- read.table("D:\\Document\\BIG-DATA\\R\\Assignment\\data\\height_weight.txt",
+                         header=TRUE,
+                         sep=',')
+variable.names(data_class)
+```
+
+```{r}
+
+# Display to 6 rows
+
+head(data_class)
+```
+
+```{r}
+
+# Display last 6 rows
+
+tail(data_class)
+
+```
+```{r}
+
+
+# Display rows from 5 to 20 and all columns from the dataset
+# number = 5 mean row to start
+# number = 20 mean row to end
+#, mean all columns
+
+data_class[5:20, ]
+```
+
+```{r}
+
+data_class[1:5,]	# First 5 rows, all columns
+data_class[10:20,] # Rows 10 to 20, all columns
+data_class[, 1] # all rows and first column(HEIGHT)
+
+data_class[, 2] # all rows and second column(WEIGHT)
+
+data_class[1:5, 1] # first 5 rows and first column(HEIGHT)
+data_class[1:5, 2] # first 5 rows and second column(WEIGHT)
+data_class[,] # all rows and columns
+```
+
+
+Another way to select columns by name
+```{r}
+data_class$HEIGHT
+```
+
+```{r}
+summary(data_class$WEIGHT)
+```
+
+
+```{r}
+length(data_class$WEIGHT)
+```
+
+```{r}
+data_class[,-1] # means select all rows but remove the first column
+```
+
+```{r}
+data_class$WEIGHT
+```
+
+## In case you want to use data set built in R
+
+```{r}
+data() # list of datasets currently available 
+data("airquality")
+variable.names(airquality)
+```
+```{r}
+str(airquality)
+```
+
+```{r}
+# Display first 6 rows
+head(airquality)
+
+# Display last 6 rows
+tail(airquality)
+
+# Display statistical summary
+summary(airquality)
+
+# Display column names
+names(airquality)
+
+# Display number of rows and columns
+dim(airquality)
+
+# Count missing values in each column
+colSums(is.na(airquality))
+```
+
+```{r}
+str(airquality)	# Shows dataset structure and variable types
+```
+```{r}
+summary(airquality) # answers: What are the statistical characteristics of my dataset?
+```
+
+# Exploration data analysis
+
+Examine numerical variable using common summary
+```{r}
+data_class
+```
+Summary Statistics
+
+```{r}
+summary(data_class)
+```
+## Understanding apply()
+
+The apply() function is used to perform a function across the rows or columns of a matrix or array.
+
+General syntax:
+
+apply(X, MARGIN, FUN)
+
+X	Dataset or matrix
+MARGIN	Specifies rows or columns
+FUN	Function to apply
+
+### Understanding 1 and 2
+
+This is very important:
+  1 = Apply the function across rows.
+  2 = Apply the function across columns.
+
+
+Example using your HEIGHT and WEIGHT dataset
+
+Suppose your data looks like this:
+
+HEIGHT	WEIGHT
+
+175	72
+
+162	56
+
+180	81
+
+158	52
+
+170	68
+
+Calculate the mean of each row:
+
+```{r}
+data_class_mean <- apply(data_class, 1, mean)
+data_class_mean
+```
+
+Calculation:
+
+Row	Calculation	Mean
+
+1	(175 + 72) / 2	123.5
+
+2	(162 + 56) / 2	109
+
+3	(180 + 81) / 2	130.5
+
+4	(158 + 52) / 2	105
+
+5	(170 + 68) / 2	119
+
+
+Calculate the mean of each column:
+
+```{r}
+
+# This calculates:
+#- Average HEIGHT.
+#- Average WEIGHT.
+
+apply(data_class, 2, mean)
+
+```
+Other examples of apply()
+```{r}
+# Calculate sum of each row
+apply(data_class, 1, sum)
+
+# Calculate sum of each column
+apply(data_class, 2, sum)
+
+# Find maximum value in each column
+apply(data_class, 2, max)
+
+# Find minimum value in each column
+apply(data_class, 2, min)
+
+# Calculate standard deviation of each column
+apply(data_class, 2, sd)
+```
+
+Rows : apply(data_class, 1, mean) 
+
+Calculates the mean of each row.
+
+Columns : apply(data_class, 2, mean)
+
+Calculates the mean of each column.
+
+
+```{r}
+c(mean(data_class$HEIGHT),sd(data_class$HEIGHT))
+```
+
+
+```{r}
+c(mean(data_class$WEIGHT),sd(data_class$WEIGHT))
+```
+```{r}
+c(Mean=mean(data_class$HEIGHT),SD=sd(data_class$HEIGHT))
+```
+
+```{r}
+c(Mean=mean(data_class$WEIGHT),SD=sd(data_class$WEIGHT))
+```
+
+Variation and covariation using both numerical and graphs
+
+## Relationship between a categorical and a continuous variable
+
+```{r}
+data("iris")
+head(iris)
+```
+
+```{r}
+mean(iris$Petal.Length)
+```
+
+```{r}
+mean(iris$Petal.Length[iris$Species=="setosa"])
+```
+```{r}
+mean(iris$Sepal.Width[iris$Species=='virginica'])
+```
+
+```{r}
+# shortcut 
+# by(iris$Petal.Length, iris$Species, mean)
+```
+
+## Visualize the differences in continuous variables between categories using Box-and-whisker plot
+
+comparing the quantitative variable Sepal.Length across the categorical variable Species in the built-in iris dataset.
+
+
+Component	         Explanation
+
+boxplot()	         Creates a box-and-whisker plot.
+iris$Sepal.Length	 Quantitative variable (numerical data).
+iris$Species	     Categorical variable (setosa, versicolor, virginica).
+~	                 Separates the quantitative variable from the grouping variable.
+data =             iris	Specifies the dataset.
+main	             Defines the chart title.
+
+
+```{r}
+boxplot(iris$Sepal.Length~iris$Species,data=iris, main="Comparison of categorical vs quantitative")
+```
+
+You can make the visualization clearer by adding axis labels and colors.
+
+```{r}
+
+boxplot(iris$Sepal.Length~iris$Species, data=iris, main="Comparison of categorical vs quantitative",
+        xlab = "Iris Speciies", ylab = "Iris Sepal Length cm",
+        col=c("lightblue","lightgreen","lightpink"),
+        border="black"
+)
+```
+
+
+
+## Relationship between two categorical variables
+
+```{r}
+ucba<-data.frame(UCBAdmissions)
+head(ucba)
+```
+
+```{r}
+cross <-xtabs(Freq~Gender+Admit, data=ucba)
+```
+
+```{r}
+
+(cross<-xtabs(Freq~Gender+Admit,data=ucba))
+
+```
+```{r}
+## Is there gender bias in UCB graduate admission process?
+prop.table(cross,1)
+```
+
+## Simpson’s paradox
+
+Phenomenon, where a trend that appears in combined groups of data disappears or reverses when broken down into groups.
+
+```{r}
+cross2<-xtabs(Freq~Gender+Admit,data=ucba[ucba$Dept=="F",])
+prop.table(cross2,1)
+```
+
+## Bar Chart
+
+```{r}
+
+dat <- read.table(text ="ProdA ProdB ProdC ProdD
+1 110 50 60 70 
+2 120 50 80 65", header= TRUE)
+
+  barplot(as.matrix(dat),beside=TRUE,col=c("Red","green"))
+  
+```
+
+
+```{r}
+
+#barplot(as.matrix(dat),beside=TRUE,col=c("gold3","red"))
+
+dat <- read.table(text = "A   B   C   D   E   F    G
+1 10 80 30 90 70 60  90
+2 20 50 70 50 40 10  40
+3 60 80 80 60  60 30 160
+4 20 40 70 80 20 10  70", header = TRUE)
+
+barplot(as.matrix(dat))
+
+```
+
+
+## Scatter Plot
+
+```{r}
+plot(WEIGHT~HEIGHT,data=data_class)
+```
+
+```{r}
+plot(data_class$HEIGHT,data_class$WEIGHT)
+```
+```{r}
+plot(data_class[,1],data_class[,2],main = "Graph")
+```
+
+
+```{r}
+
+cor(data_class$HEIGHT,data_class$WEIGHT)
+
+```
+
+## Linear Models
+
+```{r}
+# Create scatter plot
+plot(WEIGHT ~ HEIGHT, data = data_class)
+
+# Fit linear regression model
+model <- lm(WEIGHT ~ HEIGHT, data = data_class)
+
+# Add regression line
+ # abline(model, col = "red", lwd = 2)
+```
+
+
+```{r}
+
+data_lm<-lm(HEIGHT~WEIGHT,data=data_class)
+summary(data_lm)
+
+```
+
+```{r}
+plot(data_lm)
+```
+
+
+```{r}
+hist(data_class$HEIGHT)
+
+```
+
+
+```{r}
+
+hist(data_class$WEIGHT,col = "blue")
+
+```
+
+### Linear with other line
+
+```{r}
+plot(WEIGHT~HEIGHT,data=data_class)
+abline(lm(WEIGHT~HEIGHT,data=data_class)$coefficient)
+lines(lowess(data_class$HEIGHT,data_class$WEIGHT),col="blue")
+```
+
+```{r}
+
+cor(data_class$HEIGHT,data_class$WEIGHT)
+
+```
+
+```{r}
+lm(WEIGHT~HEIGHT,data=data_class)
+```
+
+# Data management
+
+Create another Variable
+
+```{r}
+attach(data_class)
+(BMI<-WEIGHT/(HEIGHT/100)^2) # create BMI variable and calculate BMI
+```
+
+```{r}
+(BMI<-round(WEIGHT/(HEIGHT/100)^2,digit=2))
+```
+
+```{r}
+head(cbind(data_class,BMI),n=5) # display 5 rows with binding column of BMI
+```
+
+```{r}
+new_data_class<-cbind(data_class,BMI)
+tail(cbind(data_class,BMI),n=10)
+```
+
+
+Summary of BMI
+
+```{r}
+summary(BMI)
+```
+
+
+```{r}
+stem(BMI,scale=2)
+```
+## Date
+
+```{r}
+today <- Sys.Date()
+ format(today, format="%B %d %Y")
+```
+
+```{r}
+ format(today, format="%A")
+```
+
+```{r}
+today <- Sys.Date()
+ dob <- as.Date("1982-02-10")
+ #today<-as.Date("2024-8-25")
+ difftime(today, dob, units="days")
+```
+
+```{r}
+startdate <- as.Date("2004-02-13")
+enddate <- as.Date("2011-01-22")
+days <- enddate - startdate
+days
+```
+## Subsetting
+
+Use of $, []. or [[]]
+Creation of leadership data Interest: How men and women differ in the way they lead their organizations. 5 questions were asked in this study. Example of the question: Do men and women in management position differ in the degree to which they defer to superiors? 1: strongly disagree, 2: disagree, 3:neither agree nor disagree,4: agree, 5: strongly agree
+
+```{r}
+
+manager <- c(1,2,3,4,5)
+country<- c("US","US","UK","UK","UK")
+gender<-c("M","F","F","M","F")
+age<-c(32,45,25,39,99)
+q1<-c(5,3,3,3,2)
+q2<-c(4,5,5,3,2)
+q3<-c(5,2,5,4,1)
+q4<-c(5,5,5,NA,2)
+q5<-c(5,5,2,NA,1)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5, stringsAsFactors = TRUE)
+leadership<-data.frame(manager,country, gender, age, q1,q2,q3,q4,q5)
+
+str(leadership)
+
+
+```
+
+```{r}
+names(leadership)
+```
+
+What you can do - combine the score of the five questions -handle the missing values - create a dataset of what you want -create age group or age categories - 99 indicate the value is missing
+
+
+## Missing value
+```{r}
+leadership$age[leadership$age==99]<-NA
+View(leadership)
+```
+
+
+```{r}
+
+leadership$agecat[leadership$age >75]<-"Elder"
+leadership$agecat[leadership$age>=35 & leadership$age<=75]<-"Middle Aged"
+leadership$agecat[leadership$age <35]<- "Young"
+leadership
+```
+
+### One way to handle missing value
+
+Deleting all observations with missing data ( Listwise deletion) is one of the several methods of handling incomplete datasets. Note: You can also replacing the missing value by the average of the remaining data.
+
+```{r}
+is.na(leadership[,5:9])
+```
+Removes all rows containing at least one missing value (NA) from the leadership dataset.
+
+```{r}
+newdata<-na.omit(leadership)
+newdata
+```
+
+
+## Sorting data
+
+```{r}
+order(leadership$age) # Sort by age 
+```
+
+```{r}
+newdata2<-leadership[order(leadership$age),]
+
+newdata2
+```
+
+## Merging data sets
+
+To merge two data frame horizontally, you use merge() function. In most cases, two data frames are joined by one or more common key variables. -example 1: merge(dataframeA, dataframeB,by=“ID”) -example 2: merge(dataframeA,dataframeB, by=c(“ID”,“country”))
+
+the second merge the two dataframes by ID and country
+
+To join two data frame( datasets) vertically, use rbind() function: Note that the two data set must have the same variables
+
+### Subset (selecting variables,dropping variables,selecting observation )
+
+```{r}
+newdata3<-leadership[,c(5:9)]
+myvars<-c("q1","q2","q3","q4","q5")
+(newdata3<-leadership[myvars])
+```
+
+```{r}
+newdata4<-leadership[,c(-1,-2)]
+(newdata4<-leadership[,-(1:5)]) # exclude columns from 1 to 5
+```
+
+
+```{r}
+newdata5<-leadership[,c(-1,-7)]
+leadership[[4]]
+```
+
+```{r}
+leadership$age
+```
+
+```{r}
+newdata6<-leadership[c(-1,-3),]
+newdata6<-leadership[c(2,4,5),]
+newdata7<-subset(leadership,age>=35|age<24,select=c(q1,q2,q3,q4,q5))
+```
+
+```{r}
+attach(leadership)
+```
+
+
+```{r}
+#newdata7<-leadership[gender="M" & age>30,]
+(newdata7<-leadership[gender=="M" & age>30,])
+```
+
+
+```{r}
+detach(leadership)
+```
 
