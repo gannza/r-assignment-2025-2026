@@ -1,0 +1,292 @@
+---
+title: "Creating Summary Statistics Function in R"
+author: "Ganza Jean Respice"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Summary statistics help us understand the main characteristics of a dataset.
+
+They include:
+- Mean
+- Median
+- Mode
+- Minimum
+- Maximum
+- Range
+- Variance
+- Standard deviation
+- Quartiles
+
+Example dataset
+
+```{r}
+
+# Create a dataset
+students <- data.frame(
+  Name = c("John", "Mary", "Peter", "Alice", "David",
+           "Grace", "James", "Sarah"),
+  Gender = c("Male", "Female", "Male", "Female",
+             "Male", "Female", "Male", "Female"),
+  Age = c(21, 23, 22, 24, 25, 21, 23, 22),
+  Marks = c(75, 85, 68, 90, 72, 88, 65, 95)
+)
+
+# Display dataset
+print(students)
+
+```
+
+## Using built-in summary() function
+The summary() function generates basic descriptive statistics.
+```{r}
+summary(students)
+```
+
+
+For numerical variables:
+
+```{r}
+summary(students$Marks)
+```
+
+## Calculating individual statistics
+
+```{r}
+# Mean
+mean(students$Marks)
+
+# Median
+median(students$Marks)
+
+# Minimum
+min(students$Marks)
+
+# Maximum
+max(students$Marks)
+
+# Range
+range(students$Marks)
+
+# Variance
+var(students$Marks)
+
+# Standard deviation
+sd(students$Marks)
+
+# Quantiles
+quantile(students$Marks)
+
+```
+## Create statistical functions
+
+can create my functions using the function() keyword. Instead of using built-in functions such as mean(), median(), min(), max(), var() and sd().
+
+ We can create one:
+ 
+### Mode Function
+ 
+```{r}
+get_mode <- function(dataset) {
+
+  values <- unique(dataset)
+
+  frequencies <- tabulate(match(dataset, values))
+
+  modes <- values[frequencies == max(frequencies)]
+
+  return(modes)
+}
+
+```
+
+```{r}
+get_mode(students$Marks)
+```
+
+### Mean Function
+
+Mean is the sum of all values divided by the number of values.
+
+```{r}
+# Create mean function
+get_mean <-function(dataset){
+  return (sum(dataset) / length(dataset))
+}
+
+```
+
+```{r}
+# Call the function
+get_mean(students$Marks)
+
+```
+### Median Function
+
+Median is the middle value when data is arranged in ascending order.
+
+```{r}
+# Create median function
+
+get_median <-function(dataset){
+  
+  dataset <- sort(dataset)
+  n <- length(dataset)
+  
+  if(n %% 2 == 1)
+  {
+    result <-dataset[ (n+1) / 2 ]
+  }else{
+    result <- (dataset[n/2] + dataset[n/2+1]) / 2
+  }
+  return (result)
+}
+```
+
+
+```{r}
+# Call the function
+get_median(students$Marks)
+```
+### Minimum Function
+
+Minimum returns the smallest value in a dataset.
+
+```{r}
+# Create Minimum function
+
+get_min <-function(dataset){
+  
+   result <- dataset[1]
+
+  for (value in dataset) {
+    if (value < result) {
+      result <- value
+    }
+  }
+
+  return(result)
+}
+```
+
+
+```{r}
+# Call the function
+get_min(students$Marks)
+```
+### Maximum Function
+
+Maximum returns the largest value in a dataset.
+
+```{r}
+get_max <- function(dataset) {
+
+  result <- dataset[1]
+
+  for (value in dataset) {
+    if (value > result) {
+      result <- value
+    }
+  }
+
+  return(result)
+}
+
+```
+
+```{r}
+
+# Call the function
+get_max(students$Marks)
+```
+
+### Variance function
+
+Variance measures how far values are spread from the mean.
+For sample variance, we divide by \(n-1\).
+
+```{r}
+
+get_variance <- function(dataset) {
+
+  n <- length(dataset)
+
+  avg <- get_mean(dataset)
+
+  squared_diff <- (dataset - avg)^2
+
+  result <- sum(squared_diff) / (n - 1)
+
+  return(result)
+}
+
+```
+
+```{r}
+# Call the function
+get_variance(students$Marks)
+```
+
+### Standard deviation function
+
+Standard deviation is the square root of variance.
+
+```{r}
+
+get_sd <- function(dataset) {
+
+  variance <- get_variance(dataset)
+   
+  result <- sqrt(variance)
+
+  return(result)
+}
+
+```
+
+```{r}
+# Call the function
+get_sd(students$Marks)
+```
+
+# Combine all functions into one summary statistics function
+
+
+```{r}
+
+get_summary <- function(dataset) {
+
+   result <- data.frame(
+    Mean = get_mean(dataset),
+    Median = get_median(dataset),
+    Minimum = get_min(dataset),
+    Maximum = get_max(dataset),
+    Variance = get_variance(dataset),
+    Standard_Deviation  = get_sd(dataset)
+  )
+
+  return(result)
+}
+
+```
+
+
+```{r}
+# Call the function
+get_summary(students$Marks)
+```
+
+
