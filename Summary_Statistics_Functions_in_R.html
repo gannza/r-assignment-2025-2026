@@ -359,25 +359,24 @@ R</h1>
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1</span> Introduction</a>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#using-built-in-summary-function" id="toc-using-built-in-summary-function"><span class="toc-section-number">2</span> Using built-in summary()
+function</a>
 <ul>
-<li><a href="#using-built-in-summary-function" id="toc-using-built-in-summary-function"><span class="toc-section-number">1.1</span> Using built-in summary()
-function</a></li>
-<li><a href="#calculating-individual-statistics" id="toc-calculating-individual-statistics"><span class="toc-section-number">1.2</span> Calculating individual
-statistics</a></li>
-<li><a href="#create-statistical-functions" id="toc-create-statistical-functions"><span class="toc-section-number">1.3</span> Create statistical functions</a>
+<li><a href="#testing-statistics" id="toc-testing-statistics"><span class="toc-section-number">2.1</span> Testing statistics</a></li>
+</ul></li>
+<li><a href="#create-statistical-functions" id="toc-create-statistical-functions"><span class="toc-section-number">3</span> Create statistical functions</a>
 <ul>
-<li><a href="#mode-function" id="toc-mode-function"><span class="toc-section-number">1.3.1</span> Mode Function</a></li>
-<li><a href="#mean-function" id="toc-mean-function"><span class="toc-section-number">1.3.2</span> Mean Function</a></li>
-<li><a href="#median-function" id="toc-median-function"><span class="toc-section-number">1.3.3</span> Median Function</a></li>
-<li><a href="#minimum-function" id="toc-minimum-function"><span class="toc-section-number">1.3.4</span> Minimum Function</a></li>
-<li><a href="#maximum-function" id="toc-maximum-function"><span class="toc-section-number">1.3.5</span> Maximum Function</a></li>
-<li><a href="#variance-function" id="toc-variance-function"><span class="toc-section-number">1.3.6</span> Variance function</a></li>
-<li><a href="#standard-deviation-function" id="toc-standard-deviation-function"><span class="toc-section-number">1.3.7</span> Standard deviation
+<li><a href="#mode-function" id="toc-mode-function"><span class="toc-section-number">3.1</span> Mode Function</a></li>
+<li><a href="#mean-function" id="toc-mean-function"><span class="toc-section-number">3.2</span> Mean Function</a></li>
+<li><a href="#median-function" id="toc-median-function"><span class="toc-section-number">3.3</span> Median Function</a></li>
+<li><a href="#minimum-function" id="toc-minimum-function"><span class="toc-section-number">3.4</span> Minimum Function</a></li>
+<li><a href="#maximum-function" id="toc-maximum-function"><span class="toc-section-number">3.5</span> Maximum Function</a></li>
+<li><a href="#variance-function" id="toc-variance-function"><span class="toc-section-number">3.6</span> Variance function</a></li>
+<li><a href="#standard-deviation-function" id="toc-standard-deviation-function"><span class="toc-section-number">3.7</span> Standard deviation
 function</a></li>
 </ul></li>
-</ul></li>
-<li><a href="#combine-all-functions-into-one-summary-statistics-function" id="toc-combine-all-functions-into-one-summary-statistics-function"><span class="toc-section-number">2</span> Combine all functions into one
+<li><a href="#combine-all-functions-into-one-summary-statistics-function" id="toc-combine-all-functions-into-one-summary-statistics-function"><span class="toc-section-number">4</span> Combine all functions into one
 summary statistics function</a></li>
 </ul>
 </div>
@@ -410,9 +409,10 @@ print(students)</code></pre>
 ## 6 Grace Female  21    88
 ## 7 James   Male  23    65
 ## 8 Sarah Female  22    95</code></pre>
-<div id="using-built-in-summary-function" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Using built-in
-summary() function</h2>
+</div>
+<div id="using-built-in-summary-function" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Using built-in
+summary() function</h1>
 <p>The summary() function generates basic descriptive statistics.</p>
 <pre class="r"><code>summary(students)</code></pre>
 <pre><code>##         Name         Gender       Age            Marks      
@@ -426,10 +426,9 @@ summary() function</h2>
 <pre class="r"><code>summary(students$Marks)</code></pre>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##   65.00   71.00   80.00   79.75   88.50   95.00</code></pre>
-</div>
-<div id="calculating-individual-statistics" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Calculating
-individual statistics</h2>
+<div id="testing-statistics" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Testing
+statistics</h2>
 <pre class="r"><code># Mean
 mean(students$Marks)</code></pre>
 <pre><code>## [1] 79.75</code></pre>
@@ -456,15 +455,16 @@ quantile(students$Marks)</code></pre>
 <pre><code>##   0%  25%  50%  75% 100% 
 ## 65.0 71.0 80.0 88.5 95.0</code></pre>
 </div>
-<div id="create-statistical-functions" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> Create statistical
-functions</h2>
+</div>
+<div id="create-statistical-functions" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Create statistical
+functions</h1>
 <p>can create my functions using the function() keyword. Instead of
 using built-in functions such as mean(), median(), min(), max(), var()
 and sd().</p>
 <p>We can create one:</p>
-<div id="mode-function" class="section level3" number="1.3.1">
-<h3><span class="header-section-number">1.3.1</span> Mode Function</h3>
+<div id="mode-function" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Mode Function</h2>
 <pre class="r"><code>get_mode &lt;- function(dataset) {
 
   values &lt;- unique(dataset)
@@ -478,8 +478,8 @@ and sd().</p>
 <pre class="r"><code>get_mode(students$Marks)</code></pre>
 <pre><code>## [1] 75 85 68 90 72 88 65 95</code></pre>
 </div>
-<div id="mean-function" class="section level3" number="1.3.2">
-<h3><span class="header-section-number">1.3.2</span> Mean Function</h3>
+<div id="mean-function" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Mean Function</h2>
 <p>Mean is the sum of all values divided by the number of values.</p>
 <pre class="r"><code># Create mean function
 get_mean &lt;-function(dataset){
@@ -489,9 +489,8 @@ get_mean &lt;-function(dataset){
 get_mean(students$Marks)</code></pre>
 <pre><code>## [1] 79.75</code></pre>
 </div>
-<div id="median-function" class="section level3" number="1.3.3">
-<h3><span class="header-section-number">1.3.3</span> Median
-Function</h3>
+<div id="median-function" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Median Function</h2>
 <p>Median is the middle value when data is arranged in ascending
 order.</p>
 <pre class="r"><code># Create median function
@@ -513,9 +512,8 @@ get_median &lt;-function(dataset){
 get_median(students$Marks)</code></pre>
 <pre><code>## [1] 80</code></pre>
 </div>
-<div id="minimum-function" class="section level3" number="1.3.4">
-<h3><span class="header-section-number">1.3.4</span> Minimum
-Function</h3>
+<div id="minimum-function" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Minimum Function</h2>
 <p>Minimum returns the smallest value in a dataset.</p>
 <pre class="r"><code># Create Minimum function
 
@@ -535,9 +533,8 @@ get_min &lt;-function(dataset){
 get_min(students$Marks)</code></pre>
 <pre><code>## [1] 65</code></pre>
 </div>
-<div id="maximum-function" class="section level3" number="1.3.5">
-<h3><span class="header-section-number">1.3.5</span> Maximum
-Function</h3>
+<div id="maximum-function" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Maximum Function</h2>
 <p>Maximum returns the largest value in a dataset.</p>
 <pre class="r"><code>get_max &lt;- function(dataset) {
 
@@ -555,9 +552,9 @@ Function</h3>
 get_max(students$Marks)</code></pre>
 <pre><code>## [1] 95</code></pre>
 </div>
-<div id="variance-function" class="section level3" number="1.3.6">
-<h3><span class="header-section-number">1.3.6</span> Variance
-function</h3>
+<div id="variance-function" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Variance
+function</h2>
 <p>Variance measures how far values are spread from the mean. For sample
 variance, we divide by <span class="math inline">\(n-1\)</span>.</p>
 <pre class="r"><code>get_variance &lt;- function(dataset) {
@@ -576,9 +573,9 @@ variance, we divide by <span class="math inline">\(n-1\)</span>.</p>
 get_variance(students$Marks)</code></pre>
 <pre><code>## [1] 124.5</code></pre>
 </div>
-<div id="standard-deviation-function" class="section level3" number="1.3.7">
-<h3><span class="header-section-number">1.3.7</span> Standard deviation
-function</h3>
+<div id="standard-deviation-function" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Standard deviation
+function</h2>
 <p>Standard deviation is the square root of variance.</p>
 <pre class="r"><code>get_sd &lt;- function(dataset) {
 
@@ -593,9 +590,8 @@ get_sd(students$Marks)</code></pre>
 <pre><code>## [1] 11.15796</code></pre>
 </div>
 </div>
-</div>
-<div id="combine-all-functions-into-one-summary-statistics-function" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Combine all functions
+<div id="combine-all-functions-into-one-summary-statistics-function" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Combine all functions
 into one summary statistics function</h1>
 <pre class="r"><code>get_summary &lt;- function(dataset) {
 

@@ -50,7 +50,7 @@ print(students)
 
 ```
 
-## Using built-in summary() function
+# Using built-in summary() function
 The summary() function generates basic descriptive statistics.
 ```{r}
 summary(students)
@@ -63,7 +63,7 @@ For numerical variables:
 summary(students$Marks)
 ```
 
-## Calculating individual statistics
+## Testing statistics
 
 ```{r}
 # Mean
@@ -91,13 +91,14 @@ sd(students$Marks)
 quantile(students$Marks)
 
 ```
-## Create statistical functions
+# Create statistical functions
 
-can create my functions using the function() keyword. Instead of using built-in functions such as mean(), median(), min(), max(), var() and sd().
+can create my functions using the function() keyword. 
+Instead of using built-in functions such as mean(), median(), min(), max(), var() and sd().
 
  We can create one:
  
-### Mode Function
+## Mode Function
  
 ```{r}
 get_mode <- function(dataset) {
@@ -117,7 +118,7 @@ get_mode <- function(dataset) {
 get_mode(students$Marks)
 ```
 
-### Mean Function
+## Mean Function
 
 Mean is the sum of all values divided by the number of values.
 
@@ -134,7 +135,7 @@ get_mean <-function(dataset){
 get_mean(students$Marks)
 
 ```
-### Median Function
+## Median Function
 
 Median is the middle value when data is arranged in ascending order.
 
@@ -161,7 +162,7 @@ get_median <-function(dataset){
 # Call the function
 get_median(students$Marks)
 ```
-### Minimum Function
+## Minimum Function
 
 Minimum returns the smallest value in a dataset.
 
@@ -187,7 +188,7 @@ get_min <-function(dataset){
 # Call the function
 get_min(students$Marks)
 ```
-### Maximum Function
+## Maximum Function
 
 Maximum returns the largest value in a dataset.
 
@@ -213,7 +214,7 @@ get_max <- function(dataset) {
 get_max(students$Marks)
 ```
 
-### Variance function
+## Variance function
 
 Variance measures how far values are spread from the mean.
 For sample variance, we divide by \(n-1\).
@@ -240,7 +241,7 @@ get_variance <- function(dataset) {
 get_variance(students$Marks)
 ```
 
-### Standard deviation function
+## Standard deviation function
 
 Standard deviation is the square root of variance.
 
