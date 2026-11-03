@@ -21,14 +21,23 @@ knitr::opts_chunk$set(echo = TRUE)
 Summary statistics help us understand the main characteristics of a dataset.
 
 They include:
+
 - Mean
+
 - Median
+
 - Mode
+
 - Minimum
+
 - Maximum
+
 - Range
+
 - Variance
+
 - Standard deviation
+
 - Quartiles
 
 Example dataset
