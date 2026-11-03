@@ -42,4 +42,4 @@ data <- read.csv("data/file.csv")
 
 ## Author
 
-**gannza**
+**Ganza Jean Respice**
