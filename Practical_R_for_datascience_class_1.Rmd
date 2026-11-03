@@ -2,6 +2,7 @@
 title: "R for data science class 1"
 author: "20252MBI004 - Ganza Jean Respice"
 date: "`r Sys.Date()`"
+publish: "https://rpubs.com/ganza/1472283"
 output:
   html_document:
     toc: true

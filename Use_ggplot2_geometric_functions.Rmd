@@ -1,0 +1,615 @@
+---
+title: "ggplot2 geometric functions"
+author: "Ganza Jean Respice"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+ggplot2 geometric functions, usually called geoms. In R you use them to choose how your data should be displayed
+
+typical ggplot2 graph follows this structure:
+
+library(ggplot2)
+
+ggplot(data, aes(x = variable_1, y=variable_2 ) + geom_function()
+
+
+Let's apply all the ggplot2 functions to a practical Human Resource Management (HRM) data.
+
+We will use three important HRM activities:
+
+1. Employed employees: Employees currently working in the institution.
+
+2. Exited employees: Employees who have resigned, retired, been terminated, or otherwise left the institution.
+
+3. Paid employees: Employees whose salaries have been successfully paid for a particular month.
+
+We will also use departments, salaries, employment dates, and payroll information.
+
+# Prepare an HRM dataset in R
+
+First, install and load ggplot2.
+
+```{r}
+# install.packages("ggplot2")
+library(ggplot2)
+```
+
+Let's create a sample employee dataset.
+
+```{r}
+
+
+employees <- data.frame(
+  employee_id = 1:15,
+
+  name = c(
+    "Jean", "Peter", "Mary", "David", "Alice",
+    "John", "Grace", "Paul", "Sarah", "James",
+    "Eric", "Diane", "Joseph", "Anne", "Mark"
+  ),
+
+  department = c(
+    "IT", "HR", "Finance", "IT", "HR",
+    "Finance", "IT", "HR", "Finance", "IT",
+    "HR", "Finance", "IT", "HR", "Finance"
+  ),
+
+  status = c(
+    "Employed", "Employed", "Employed", "Exited", "Employed",
+    "Employed", "Exited", "Employed", "Employed", "Exited",
+    "Employed", "Employed", "Employed", "Exited", "Employed"
+  ),
+
+  salary = c(
+    800000, 600000, 750000, 500000, 650000,
+    700000, 550000, 620000, 720000, 480000,
+    680000, 760000, 850000, 520000, 690000
+  ),
+
+  paid = c(
+    "Yes", "Yes", "No", "No", "Yes",
+    "Yes", "No", "Yes", "No", "No",
+    "Yes", "Yes", "Yes", "No", "No"
+  )
+)
+
+print(employees)
+
+```
+Our dataset contains:
+
+
+```{r}
+nrow(employees) # total employees.
+
+sum(employees$status=='Employed') # sum of employed employees.
+
+sum(employees$status=='Exited') # sum of exited employees.
+
+sum(employees$paid=='Yes') # employees marked as paid.
+
+sum(employees$paid=='No') # employees marked as not paid.
+
+```
+- 15 employees
+
+- 11 employed employees.
+
+- 4 exited employees.
+
+- 8 employees marked as paid.
+
+- 7 employees marked as not paid.
+
+These are illustrative records, not actual institutional statistics.
+
+
+# Understanding each graph using HRM examples
+
+## geom_bar() 
+
+Used to count the number of observations in each category.
+
+e.g:
+Number of employees by employment status
+
+HRM questions: 
+
+How many employees are currently employed and how many exited?
+
+```{r}
+ggplot(employees, aes(x= status, fill=status)) + 
+  geom_bar() +
+  scale_fill_manual(
+    values = c("Employed" = "steelblue", "Exited"="red" )
+  )+
+  labs(
+    title = "Employee Employment Status",
+    x="Employee Status",
+    y = "Number of Employees"
+  )
+```
+- Employed = 11
+
+- Exited = 4
+
+This graph is useful for HR departments when preparing workforce reports.
+
+
+## geom_histogram() 
+
+Used to show the distribution of numerical data.
+
+e.g:
+Distribution of employee salaries
+
+
+HRM question: 
+How many employees earn salaries within different salary ranges?
+
+```{r}
+ggplot(employees, aes(x = salary)) +
+  geom_histogram(
+    bins = 8,
+    fill = "steelblue",
+    color = "white"
+  ) +
+  labs(
+    title = "Distribution of Employee Salaries",
+    x = "Monthly Salary (RWF)",
+    y = "Number of Employees"
+  ) 
+```
+The histogram helps HR understand salary distribution.
+
+For example:
+
+- How many employees earn between 500,000 and 600,000 RWF?
+
+- How many earn between 700,000 and 800,000 RWF?
+
+## geom_density() 
+
+Similar to a histogram, but displays a smooth distribution curve.
+
+e.g:
+Salary distribution by employment status
+
+HRM question:
+How does the salary distribution of employed employees compare with employees who exited?
+
+```{r}
+ggplot(employees, aes(x = salary, fill = status)) +
+  geom_density(alpha = 0.5) +
+  labs(
+    title = "Salary Distribution by Employment Status",
+    x = "Monthly Salary (RWF)",
+    y = "Density"
+  )
+```
+This helps HR compare the salary profiles of current and former employees.
+
+
+## geom_boxplot() 
+
+Used to summarize the distribution of numerical data and identify outliers.
+
+e.g:
+Salary comparison by department
+
+HRM question: 
+Which department has higher salaries, and which department has greater salary variation?
+
+```{r}
+ggplot(employees, aes(
+  x = department,
+  y = salary,
+  fill = department
+)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c(
+    "Finance" = "steelblue",
+    "HR" = "orange",
+    "IT" = "forestgreen"
+  )) +
+  labs(
+    title = "Salary Comparison by Department",
+    x = "Department",
+    y = "Monthly Salary (RWF)",
+    fill = "Department"
+  )
+```
+
+The boxplot helps identify:
+
+- Median salary in each department.
+
+- Salary variation.
+
+- Potentially unusually high or low salaries (outliers).
+
+HR employees generally earn less than Finance employees. The dot represents an employee whose salary is unusually low compared with the other HR salaries.
+
+IT has the widest salary distribution. This may reflect differences in technical skills, job grades, seniority, responsibilities, or experience.
+
+## geom_point() 
+
+Used to show the relationship between two numerical variables.
+
+e.g:
+Relationship between employee salary and employment status
+
+Let's create an additional variable representing years of service.
+
+```{r}
+employees$years_service <- c(
+  5, 3, 8, 2, 4,
+  7, 3, 6, 5, 1,
+  9, 8, 10, 2, 4
+)
+
+ggplot(employees, aes(x = years_service, y = salary)) +
+  geom_point(aes(color = status), size = 3) +
+ 
+  labs(
+    title = "Salary vs Years of Service",
+    x = "Years of Service",
+    y = "Monthly Salary (RWF)",
+    color = "Employment Status"
+  )
+```
+
+HR can investigate whether employees with more years of service receive higher salaries.
+
+
+## geom_line() 
+
+Usually used to show changes over time or an ordered variable.
+
+e.g:
+HRM question: How does the total salary paid change from month to month?
+
+Create a payroll dataset:
+
+```{r}
+
+payroll <- data.frame(
+  month = factor(
+    c("Jan", "Feb", "Mar", "Apr", "May", "Jun"),
+    levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun")
+  ),
+
+  total_paid = c(
+    45000000, 47000000, 46000000,
+    50000000, 52000000, 55000000
+  )
+)
+
+ggplot(payroll, aes(
+  x = month,
+  y = total_paid,
+  group = 1,
+  color = "Total Payroll"
+)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  scale_color_manual(
+    name = "Payroll Indicator",
+    values = c("Total Payroll" = "blue")
+  ) +
+  labs(
+    title = "Monthly Payroll Trend",
+    x = "Month",
+    y = "Total Salary Paid (RWF)"
+  )
+```
+
+HR and Finance can monitor payroll expenditure and identify increases or decreases in monthly payments.
+
+
+## geom_smooth() 
+
+This is useful for seeing the general relationship or trend between variables.
+
+e.g:
+Employee salary trend
+
+HRM question:
+Is salary generally increasing as employees gain more years of service?
+
+```{r}
+ggplot(employees,
+       aes(x = years_service, y = salary)) +
+
+  geom_point(aes(color = "Employees"), size = 3) +
+
+  geom_smooth(
+    aes(color = "Salary Growth Trend"),
+    method = "lm",
+    se = TRUE
+  ) +
+
+  scale_color_manual(
+    name = "Legend",
+    values = c(
+      "Employees" = "blue",
+      "Salary Growth Trend" = "red"
+    )
+  ) +
+
+  labs(
+    title = "Employee Salary Growth Trend",
+    x = "Years of Service",
+    y = "Monthly Salary (RWF)"
+  )
+```
+
+This shows an association, not proof that additional service years cause salary increases.
+
+
+## geom_jitter() 
+Sometimes many points have exactly the same position and overlap. geom_jitter() spreads them slightly so you can see them.
+
+e.g:
+Compare paid and unpaid employees
+
+
+HRM question:
+How are salaries distributed among paid and unpaid employees?
+
+```{r}
+ggplot(employees,
+       aes(x = paid, y = salary, color = status)) +
+
+  geom_jitter(
+    width = 0.15,
+    size = 3
+  ) +
+
+  labs(
+    title = "Paid vs Unpaid Employees",
+    x = "Salary Payment Status",
+    y = "Monthly Salary (RWF)"
+  )
+```
+
+- Yes = employees whose salaries were paid.
+- No = employees whose salaries were not paid.
+- Each dot represents one employee.
+
+Jitter prevents points with similar values from hiding one another.
+
+This is useful for payroll reconciliation.
+
+
+## geom_violin() 
+
+Similar to a boxplot, but shows more detail about the shape of the data distribution.
+
+e.g:
+Salary distribution across departments
+
+```{r}
+ggplot(employees,
+       aes(x = department, y = salary, fill = department)) +
+
+  geom_violin(trim = FALSE, alpha = 0.7) +
+
+  geom_boxplot(
+    width = 0.12,
+    fill = "white",
+    color = "black",
+    outlier.color = "red",
+    outlier.size = 2
+  ) +
+
+  scale_fill_manual(
+    name = "Department",
+    values = c(
+      "Finance" = "steelblue",
+      "HR" = "orange",
+      "IT" = "forestgreen"
+    )
+  ) +
+
+  labs(
+    title = "Salary Distribution by Department",
+    x = "Department",
+    y = "Monthly Salary (RWF)"
+  )
+```
+
+- Wide sections indicate more observations concentrated around those salary levels.
+
+- Narrow sections indicate fewer observations.
+
+- You can compare salary distributions across departments.
+
+## geom_text() 
+Used to add labels or text.
+
+e.g:
+
+Display employee names on a graph
+
+HRM question:
+Which employees have the highest salaries?
+
+```{r}
+ggplot(employees,
+       aes(x = years_service, y = salary)) +
+
+  geom_point(color = "blue", size = 3) +
+
+  geom_text(
+    aes(label = name),
+    vjust = -0.8,
+    size = 3
+  ) +
+
+  labs(
+    title = "Employee Salary by Years of Service",
+    x = "Years of Service",
+    y = "Monthly Salary (RWF)"
+  )
+```
+
+
+Each point represents an employee, and the text identifies that employee.
+
+Useful for identifying individual employees in HR analytics. In real HR reports, avoid exposing personal information unnecessarily.
+
+
+## geom_rug() 
+
+Adds small marks along the axes to show where individual data points are located.
+
+e.g:
+Show individual employee salaries
+
+```{r}
+ggplot(employees, aes(x = salary)) +
+
+  geom_density(fill = "lightblue", alpha = 0.5) +
+
+  geom_rug(color = "red") +
+
+  labs(
+    title = "Employee Salary Distribution",
+    x = "Monthly Salary (RWF)",
+    y = "Density"
+  )
+```
+The small red marks along the X-axis represent individual employee salaries.
+
+This helps HR see the actual observations behind the distribution curve.
+
+
+## geom_hline() 
+
+Adds a horizontal line at a specific Y value.
+
+e.g:
+Add a horizontal salary benchmark
+
+HRM question:
+Which employees earn above or below the salary benchmark of 700,000 RWF?
+
+```{r}
+ggplot(employees,
+       aes(x = name, y = salary)) +
+
+  geom_point(color = "blue", size = 3) +
+
+  geom_hline(
+    yintercept = 700000,
+    color = "red",
+    linetype = "dashed"
+  ) +
+
+  labs(
+    title = "Employee Salary Benchmark",
+    x = "Employee",
+    y = "Monthly Salary (RWF)"
+  )
+```
+- Above the red line: salary greater than 700,000 RWF.
+
+- Below the red line: salary less than 700,000 RWF.
+
+- On the line: salary equal to 700,000 RWF.
+
+This can help HR compare salaries against an established salary threshold.
+
+## geom_vline() 
+
+Adds a vertical line at a specific X value.
+
+e.g:
+Add a vertical service-years benchmark
+
+HRM question: 
+Which employees have worked for at least five years?
+
+```{r}
+ggplot(employees,
+       aes(x = years_service, y = salary)) +
+
+  geom_point(aes(color = status), size = 3) +
+
+  geom_vline(
+    xintercept = 5,
+    color = "red",
+    linetype = "dashed"
+  ) +
+
+  labs(
+    title = "Employee Experience Benchmark",
+    x = "Years of Service",
+    y = "Monthly Salary (RWF)"
+  )
+```
+
+- Left of the line: employees with fewer than five years of service.
+
+- Right of the line: employees with more than five years of service.
+
+- On the line: employees with exactly five years of service.
+
+Useful for analyzing employee experience and eligibility for certain HR programs.
+
+# Summary: HRM requirement	vs Recommended function
+
+Count employed vs exited employees:
+use geom_bar()
+
+Analyze salary ranges:
+use geom_histogram()
+
+Compare salary distributions:
+use geom_density()
+
+Identify salary outliers:	
+use geom_boxplot()
+
+Analyze salary vs experience:
+use geom_point()
+
+Monitor monthly payroll:
+use geom_line()
+
+Analyze salary growth trends:
+use geom_smooth()
+
+Compare paid vs unpaid employees:
+use geom_jitter()
+
+Compare salary distributions by department:
+use geom_violin()
+
+Identify individual employees:
+use geom_text()
+
+Inspect individual salary observations:
+use geom_rug()
+
+Compare salaries against a benchmark:
+use geom_hline()
+
+Compare employee experience against a threshold:
+use geom_vline()
+
