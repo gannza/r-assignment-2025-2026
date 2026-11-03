@@ -1,0 +1,977 @@
+---
+title: "Understanding T-Tests in R"
+author: "Ganza Jean Respice"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    code_folding: show
+    df_print: paged
+  pdf_document:
+    toc: true
+    number_sections: true
+  word_document:
+    toc: true
+---
+
+# Learning objectives
+
+By the end of this guide, you should be able to:
+
+1. Explain what a t-test is and when it is useful in Human Resource Management (HRM).
+2. Formulate the null hypothesis (\(H_0\)) and alternative hypothesis (\(H_1\) or \(H_a\)).
+3. Distinguish between one-tailed and two-tailed hypotheses.
+4. Select the correct t-test for a research question.
+5. Run one-sample, independent-samples, and paired-samples t-tests in R.
+6. Interpret the t-statistic, degrees of freedom, p-value, confidence interval, and mean difference.
+7. Check important assumptions and write a conclusion in plain language.
+
+# 1. What is a t-test?
+
+A **t-test** is an inferential statistical test used to assess whether a mean (average) is different from a specified value or whether the means of two groups differ.
+
+In HRM, a t-test can help answer questions such as:
+
+- Is the average monthly salary of employees different from RWF 500,000?
+- Is average salary different between two independent departments?
+- Did employees' performance scores change after a training programme?
+- Is average job-satisfaction score different between two groups of employees?
+
+A t-test uses sample information to assess evidence about a population mean or a difference between population means.
+
+## 1.1 Descriptive statistics versus inferential statistics
+
+Descriptive statistics describe the data you have collected. For example, the average performance score of 20 employees is 72.
+
+Inferential statistics use sample data to draw a conclusion about a wider population. A t-test helps assess whether an observed difference is sufficiently inconsistent with a specified null hypothesis.
+
+**Important:** A statistically significant result does not automatically mean that the difference is large, important, or caused by the factor being studied.
+
+# 2. Understanding hypotheses: H0 and H1
+
+Hypothesis testing begins by stating two competing claims.
+
+## 2.1 Null hypothesis (H0)
+
+The **null hypothesis**, written as \(H_0\), is the default statistical claim. It commonly states that there is no difference, no effect, or that a population mean equals a specified reference value.
+
+Examples:
+
+- The average employee salary is RWF 500,000.
+- Average performance before training equals average performance after training.
+- Average salary in Department A equals average salary in Department B.
+
+## 2.2 Alternative hypothesis (H1 or Ha)
+
+The **alternative hypothesis**, written as \(H_1\) or \(H_a\), is the competing claim. It states that a difference or effect exists, or that a mean is greater or smaller than a reference value.
+
+Examples:
+
+- The average employee salary is not RWF 500,000.
+- Average performance after training is different from performance before training.
+- Average salary in Department A is different from average salary in Department B.
+
+## 2.3 The mathematical difference between H0 and H1
+
+The hypotheses are written using population parameters, not just the sample averages.
+
+Let:
+
+- \(\mu\) = population mean.
+- \(\mu_0\) = a specified reference mean.
+- \(\mu_1\) = population mean for Group 1.
+- \(\mu_2\) = population mean for Group 2.
+- \(\mu_d\) = population mean of paired differences.
+
+| Research question | Null hypothesis (H0) | Two-sided alternative (H1) |
+|---|---|---|
+| Is mean salary equal to RWF 500,000? | \(H_0: \mu = 500000\) | \(H_1: \mu \ne 500000\) |
+| Do two departments have equal mean salaries? | \(H_0: \mu_1 = \mu_2\) | \(H_1: \mu_1 \ne \mu_2\) |
+| Does training change mean performance? | \(H_0: \mu_d = 0\) | \(H_1: \mu_d \ne 0\) |
+| Does training improve mean performance? | \(H_0: \mu_d = 0\) | \(H_1: \mu_d > 0\) |
+
+For the training examples above, define each employee's difference as:
+
+\[
+d = \text{After score} - \text{Before score}
+\]
+
+A positive difference means the employee's score increased.
+
+## 2.4 Two-tailed and one-tailed tests
+
+The alternative hypothesis determines the direction of the test.
+
+### Two-tailed test
+
+Use a two-tailed test when you want to know whether a mean is **different**, without specifying whether it should be higher or lower.
+
+\[
+H_0: \mu = \mu_0
+\]
+
+\[
+H_1: \mu \ne \mu_0
+\]
+
+The alternative includes both possibilities: \(\mu > \mu_0\) and \(\mu < \mu_0\).
+
+**HRM example:** Is the average salary different from RWF 500,000?
+
+### Right-tailed test
+
+Use a right-tailed test when the research question specifically predicts a higher mean.
+
+\[
+H_0: \mu \leq \mu_0
+\]
+
+\[
+H_1: \mu > \mu_0
+\]
+
+**HRM example:** Is average performance after training higher than before training?
+
+For a paired t-test in R, the direction is determined by how you define the difference. If the first vector is `After` and the second is `Before`, `alternative = "greater"` tests whether the mean of `After - Before` is greater than zero.
+
+### Left-tailed test
+
+Use a left-tailed test when the research question specifically predicts a lower mean.
+
+\[
+H_0: \mu \geq \mu_0
+\]
+
+\[
+H_1: \mu < \mu_0
+\]
+
+**HRM example:** Has the average time required to process a recruitment application fallen below 30 days?
+
+**Research-design caution:** Choose a one-tailed or two-tailed alternative before examining the results. Do not choose the direction afterwards just to obtain a smaller p-value.
+
+# 3. Significance level and p-value
+
+## 3.1 Significance level (alpha)
+
+The significance level is written as \(\alpha\). It is the threshold chosen before the test for deciding when a result is statistically significant.
+
+A common choice is:
+
+\[
+\alpha = 0.05
+\]
+
+This is a 5% significance level. Under the assumptions of the test, it controls the long-run probability of rejecting a true null hypothesis at the chosen threshold.
+
+Other possible levels include:
+
+- \(\alpha = 0.01\): 1% significance level.
+- \(\alpha = 0.05\): 5% significance level.
+- \(\alpha = 0.10\): 10% significance level.
+
+## 3.2 What is a p-value?
+
+The p-value is the probability, **assuming the null hypothesis is true**, of obtaining a test statistic at least as extreme as the one observed, in the direction(s) specified by the alternative hypothesis.
+
+It is not the probability that \(H_0\) is true. It is not the probability that the result happened by chance in a general sense.
+
+## 3.3 Decision rule
+
+Compare the p-value with the significance level:
+
+| Condition | Statistical decision | Meaning |
+|---|---|---|
+| \(p < 0.05\) | Reject \(H_0\) | Evidence against the null hypothesis is statistically significant at 5%. |
+| \(p \geq 0.05\) | Fail to reject \(H_0\) | There is insufficient evidence to reject the null hypothesis at 5%. |
+
+Do not write that you have "proved" or "accepted" the null hypothesis. A non-significant result does not prove that there is no difference.
+
+## 3.4 Examples of p-value interpretation
+
+- If \(p = 0.02\), then \(0.02 < 0.05\): reject \(H_0\) at the 5% level.
+- If \(p = 0.18\), then \(0.18 > 0.05\): fail to reject \(H_0\) at the 5% level.
+- If \(p = 0.001\), the result is statistically significant at the 5% and 1% levels.
+
+A p-value does not measure the size or practical importance of a difference. Always examine the estimated difference and confidence interval as well.
+
+# 4. The t-statistic and the t-distribution
+
+A t-test compares an observed difference with the amount of sampling variation expected under the null hypothesis.
+
+A general form is:
+
+\[
+t = \frac{\text{Observed estimate} - \text{Null value}}
+{\text{Standard error of the estimate}}
+\]
+
+The **standard error** measures the estimated sampling variability of an estimate. A larger absolute t-statistic means the observed estimate is farther from the null value in standard-error units.
+
+The t-distribution is used to calculate p-values and confidence intervals. Its exact shape depends on the degrees of freedom (df). With more degrees of freedom, it becomes closer to the standard normal distribution.
+
+# 5. The three common types of t-test
+
+| Type | What is compared? | HRM example |
+|---|---|---|
+| One-sample t-test | One sample mean against a reference value | Employee mean salary versus RWF 500,000 |
+| Independent two-sample t-test | Means from two separate groups | Mean salary in HR versus Finance |
+| Paired-sample t-test | Two linked measurements | Performance before and after training for the same employees |
+
+The most important question is: **Are the two sets of observations independent, or are they paired?**
+
+# 6. One-sample t-test
+
+## 6.1 When should it be used?
+
+Use a one-sample t-test when you have one numerical sample and want to compare its population mean with a known or specified reference value.
+
+**HRM scenario:** An organization wants to investigate whether the average monthly salary of a sample of employees differs from RWF 500,000.
+
+## 6.2 Hypotheses
+
+Let \(\mu\) represent the population mean monthly salary.
+
+\[
+H_0: \mu = 500000
+\]
+
+\[
+H_1: \mu \ne 500000
+\]
+
+This is a two-tailed test because the question asks whether the mean is different, not specifically higher or lower.
+
+## 6.3 Formula
+
+The one-sample t-statistic is:
+
+\[
+t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}}
+\]
+
+Where:
+
+- \(\bar{x}\) = sample mean.
+- \(\mu_0\) = hypothesized population mean (RWF 500,000 in this example).
+- \(s\) = sample standard deviation.
+- \(n\) = sample size.
+- \(s/\sqrt{n}\) = standard error of the sample mean.
+
+Degrees of freedom:
+
+\[
+df = n - 1
+\]
+
+## 6.4 Create an HRM dataset
+
+```{r salary-data}
+salary <- c(
+  450000, 500000, 520000, 480000, 550000,
+  600000, 510000, 530000, 490000, 560000
+)
+
+salary_data <- data.frame(
+  Employee = 1:length(salary),
+  Monthly_Salary = salary
+)
+
+salary_data
+```
+
+Each number represents the monthly salary of one employee, in Rwandan francs (RWF).
+
+## 6.5 Explore the data
+
+```{r salary-descriptive}
+mean(salary)
+median(salary)
+sd(salary)
+length(salary)
+summary(salary)
+```
+
+Before running the t-test, understand the sample: its average, variability, and number of observations.
+
+## 6.6 Perform the one-sample t-test
+
+```{r one-sample-test}
+result_one <- t.test(
+  salary,
+  mu = 500000,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+
+result_one
+```
+
+Explanation of the arguments:
+
+- `salary`: the numerical sample.
+- `mu = 500000`: the reference mean.
+- `alternative = "two.sided"`: tests for a difference in either direction.
+- `conf.level = 0.95`: requests a 95% confidence interval.
+
+## 6.7 Extract individual results
+
+```{r one-sample-extract}
+result_one$statistic
+result_one$parameter
+result_one$p.value
+result_one$conf.int
+result_one$estimate
+```
+
+These components represent:
+
+| R expression | Meaning |
+|---|---|
+| `result_one$statistic` | Calculated t-statistic |
+| `result_one$parameter` | Degrees of freedom |
+| `result_one$p.value` | P-value |
+| `result_one$conf.int` | Confidence interval for the population mean |
+| `result_one$estimate` | Sample mean |
+
+## 6.8 Make the statistical decision
+
+```{r one-sample-decision}
+alpha <- 0.05
+
+if (result_one$p.value < alpha) {
+  print("Reject H0: the mean salary differs from RWF 500,000.")
+} else {
+  print("Fail to reject H0: insufficient evidence that the mean salary differs from RWF 500,000.")
+}
+```
+
+## 6.9 How to write the conclusion
+
+Use the actual p-value and confidence interval printed by R.
+
+A suitable reporting structure is:
+
+" A one-sample t-test was conducted to determine whether the mean monthly salary differed from RWF 500,000. The sample mean was RWF [insert estimate]. The test produced \(t(df) = [insert t]\), \(p = [insert p]\), with a 95% confidence interval of [insert lower limit, upper limit]. At the 5% significance level, we [reject/fail to reject] the null hypothesis. "
+
+If the result is significant, state that the sample provides statistical evidence that the population mean differs from RWF 500,000. If it is not significant, state that there is insufficient evidence of a difference.
+
+# 7. Independent two-sample t-test
+
+## 7.1 When should it be used?
+
+Use an independent two-sample t-test when comparing the mean of a numerical variable between **two separate, unrelated groups**.
+
+Each employee should belong to one group only for the comparison.
+
+**HRM scenario:** The HR department wants to investigate whether average monthly salary differs between employees in the Finance and Human Resources departments.
+
+## 7.2 Hypotheses
+
+Let:
+
+- \(\mu_1\) = population mean salary in Finance.
+- \(\mu_2\) = population mean salary in Human Resources.
+
+Two-sided hypotheses:
+
+\[
+H_0: \mu_1 = \mu_2
+\]
+
+Equivalent form:
+
+\[
+H_0: \mu_1 - \mu_2 = 0
+\]
+
+\[
+H_1: \mu_1 \ne \mu_2
+\]
+
+The null hypothesis says the population mean salaries are equal. The alternative says they are different.
+
+## 7.3 Formula: Welch's independent t-test
+
+R's `t.test()` uses Welch's two-sample t-test by default. It does not require the two population variances to be equal.
+
+\[
+t =
+\frac{\bar{x}_1-\bar{x}_2}
+{\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}}
+\]
+
+Where:
+
+- \(\bar{x}_1,\bar{x}_2\) = sample means.
+- \(s_1^2,s_2^2\) = sample variances.
+- \(n_1,n_2\) = sample sizes.
+
+Welch's degrees of freedom are estimated from the sample sizes and variances; they are not generally a simple integer.
+
+## 7.4 Create the HRM dataset
+
+```{r department-data}
+employees <- data.frame(
+  Department = c(
+    rep("Finance", 5),
+    rep("HR", 5)
+  ),
+  Salary = c(
+    500000, 550000, 600000, 520000, 580000,
+    450000, 480000, 500000, 470000, 510000
+  )
+)
+
+employees
+```
+
+## 7.5 Calculate the mean salary by department
+
+```{r department-means}
+aggregate(
+  Salary ~ Department,
+  data = employees,
+  FUN = mean
+)
+```
+
+This gives the sample mean for each department. Descriptive statistics alone do not establish whether the population means differ; the t-test assesses the evidence.
+
+## 7.6 Perform the independent t-test
+
+```{r independent-test}
+result_independent <- t.test(
+  Salary ~ Department,
+  data = employees,
+  alternative = "two.sided"
+)
+
+result_independent
+```
+
+Because `var.equal` is not specified, R performs Welch's test.
+
+## 7.7 Equal-variance version
+
+A pooled independent-samples t-test assumes equal population variances:
+
+\[
+H_0: \sigma_1^2 = \sigma_2^2
+\]
+
+If equal variances are justified by the study design and analysis, R can run the pooled version:
+
+```{r pooled-test}
+t.test(
+  Salary ~ Department,
+  data = employees,
+  var.equal = TRUE
+)
+```
+
+Do not automatically use `var.equal = TRUE`. Welch's test is a sensible default when equal variances cannot be justified.
+
+## 7.8 Interpretation
+
+Look at:
+
+- The sample mean for each department.
+- The estimated difference between the group means.
+- The t-statistic and degrees of freedom.
+- The p-value.
+- The confidence interval for the difference.
+
+A statistically significant result indicates evidence that the population mean salaries differ. It does not explain why they differ. Job grade, seniority, qualifications, responsibilities, and other factors may contribute to salary differences.
+
+# 8. Paired-sample t-test
+
+## 8.1 When should it be used?
+
+Use a paired t-test when two measurements are linked, usually because they are collected from the same person at two different times.
+
+**HRM scenario:** An organization measures employees' performance before and after a training programme. The same employees take both assessments.
+
+The measurements are paired because each employee's "before" score is linked to that employee's "after" score.
+
+Other HRM examples:
+
+- Employee productivity before and after a new HR information system.
+- Job satisfaction before and after an organizational change.
+- Recruitment processing time before and after a new recruitment procedure, measured for matched cases.
+
+## 8.2 Hypotheses
+
+Define the difference for each employee as:
+
+\[
+d_i = \text{After}_i - \text{Before}_i
+\]
+
+Let \(\mu_d\) be the population mean of these differences.
+
+For a two-sided test:
+
+\[
+H_0: \mu_d = 0
+\]
+
+\[
+H_1: \mu_d \ne 0
+\]
+
+For a directional test asking whether training improves performance:
+
+\[
+H_0: \mu_d \leq 0
+\]
+
+\[
+H_1: \mu_d > 0
+\]
+
+The two-sided test asks whether performance changed. The right-tailed test asks whether performance increased, using the difference defined as After minus Before.
+
+## 8.3 Formula for the paired t-test
+
+A paired t-test is mathematically a one-sample t-test applied to the individual differences.
+
+\[
+t = \frac{\bar{d} - 0}{s_d/\sqrt{n}}
+\]
+
+Where:
+
+- \(\bar{d}\) = average of the paired differences.
+- \(s_d\) = standard deviation of the paired differences.
+- \(n\) = number of pairs (employees).
+- \(s_d/\sqrt{n}\) = standard error of the mean difference.
+
+Degrees of freedom:
+
+\[
+df = n - 1
+\]
+
+**Key point:** The test evaluates the mean of the differences, not two unrelated group means.
+
+## 8.4 Create the employee performance dataset
+
+```{r training-data}
+training <- data.frame(
+  Employee = 1:10,
+  Before = c(50, 55, 60, 65, 55, 60, 50, 70, 65, 60),
+  After  = c(65, 70, 75, 75, 70, 80, 65, 85, 80, 75)
+)
+
+training
+```
+
+## 8.5 Calculate the averages
+
+```{r training-means}
+mean(training$Before)
+mean(training$After)
+```
+
+Compare the two sample averages. Then calculate the employee-level differences.
+
+```{r training-differences}
+training$Difference <- training$After - training$Before
+
+training
+mean(training$Difference)
+sd(training$Difference)
+```
+
+A positive difference indicates an increase in that employee's performance score.
+
+## 8.6 Perform the paired t-test
+
+```{r paired-test}
+result_paired <- t.test(
+  training$After,
+  training$Before,
+  paired = TRUE,
+  alternative = "two.sided",
+  conf.level = 0.95
+)
+
+result_paired
+```
+
+The `paired = TRUE` argument tells R that the first and second observations are matched employee by employee.
+
+## 8.7 Test whether performance improved
+
+If the research question was specified in advance as "Did performance increase after training?", use:
+
+```{r paired-directional}
+result_improvement <- t.test(
+  training$After,
+  training$Before,
+  paired = TRUE,
+  alternative = "greater"
+)
+
+result_improvement
+```
+
+Here, R calculates the differences as `After - Before`. The `"greater"` alternative tests whether their population mean is greater than zero.
+
+## 8.8 Extract and interpret the results
+
+```{r paired-extract}
+result_paired$statistic
+result_paired$parameter
+result_paired$p.value
+result_paired$conf.int
+result_paired$estimate
+```
+
+For this paired test:
+
+- `estimate` is the mean of the paired differences (`After - Before`).
+- `conf.int` is the confidence interval for the population mean difference.
+- `p.value` is the evidence against the null hypothesis of zero mean difference.
+
+A suitable conclusion should report the mean change, t-statistic, degrees of freedom, p-value, and confidence interval.
+
+**Caution:** A before-and-after comparison can show that scores changed after training, but by itself it cannot prove that training caused the change. Other events, practice effects, or changes over time may also explain some of the difference.
+
+# 9. Understanding the R t-test output
+
+A typical R t-test output contains:
+
+```text
+t = ...
+df = ...
+p-value = ...
+alternative hypothesis: ...
+95 percent confidence interval:
+...
+sample estimates:
+...
+```
+
+| Output | Explanation |
+|---|---|
+| `t` | The calculated t-statistic |
+| `df` | Degrees of freedom |
+| `p-value` | Evidence against the null hypothesis under the test assumptions |
+| `alternative hypothesis` | The alternative claim tested |
+| `95 percent confidence interval` | A range of values compatible with the data and model at the 95% confidence level |
+| `sample estimates` | The sample mean or estimated mean difference, depending on the test |
+
+## 9.1 Confidence interval interpretation
+
+A 95% confidence interval is produced by a method that, over repeated samples under its assumptions, would contain the true population parameter about 95% of the time.
+
+For a two-sided test at the 5% level:
+
+- For a one-sample mean, if the 95% confidence interval excludes the reference mean, the test is statistically significant.
+- For a difference between two means, if the 95% confidence interval excludes zero, the test is statistically significant.
+- For a paired mean difference, if the 95% confidence interval excludes zero, the test is statistically significant.
+
+The confidence interval also communicates the plausible size and direction of the difference, not just whether the p-value crosses a threshold.
+
+# 10. Assumptions of t-tests
+
+A statistical test is only as useful as the suitability of its assumptions for the data and study design.
+
+## 10.1 Numerical outcome
+
+The outcome should be quantitative, such as salary, performance score, processing time, or satisfaction score treated as numerical.
+
+A t-test is not suitable for comparing the mean of a purely categorical variable such as department name or employment category.
+
+## 10.2 Independence
+
+For a one-sample test, observations should be independent of one another.
+
+For an independent two-sample test, observations should be independent within and between groups. One employee should not appear in both groups as if they were separate people.
+
+For a paired test, the two measurements within each pair are intentionally related. The pairs themselves should be independent of one another.
+
+## 10.3 Approximate normality
+
+- One-sample t-test: the outcome should be approximately normally distributed in the population, especially important for small samples.
+- Independent t-test: the outcome should be approximately normal within each group, especially important for small samples.
+- Paired t-test: the **differences** should be approximately normally distributed. The before and after scores do not each need to be normally distributed separately for this assumption.
+
+The t-test can be reasonably robust to moderate departures from normality, particularly with larger samples and without severe outliers. Always consider the sample size, distribution, and study design.
+
+## 10.4 Equal variances
+
+Equal population variances are required for the traditional pooled independent t-test, but not for Welch's test.
+
+R uses Welch's test by default:
+
+```r
+t.test(Salary ~ Department, data = employees)
+```
+
+The pooled equal-variance version is:
+
+```r
+t.test(
+  Salary ~ Department,
+  data = employees,
+  var.equal = TRUE
+)
+```
+
+# 11. Checking normality in R
+
+## 11.1 Histogram
+
+```{r salary-histogram, fig.width=7, fig.height=4}
+hist(
+  salary,
+  main = "Distribution of Employee Salaries",
+  xlab = "Monthly salary (RWF)",
+  col = "lightblue"
+)
+```
+
+A histogram helps you inspect the shape of the distribution and identify possible skewness or unusual observations.
+
+## 11.2 Q-Q plot
+
+```{r salary-qq, fig.width=7, fig.height=4}
+qqnorm(salary, main = "Q-Q Plot of Employee Salaries")
+qqline(salary, col = "red")
+```
+
+Points that lie roughly along the reference line are consistent with approximate normality. Strong systematic departures may indicate non-normality.
+
+## 11.3 Shapiro-Wilk test
+
+```{r shapiro-salary}
+shapiro.test(salary)
+```
+
+The Shapiro-Wilk test evaluates:
+
+\[
+H_0: \text{The data are from a normal distribution}
+\]
+
+\[
+H_1: \text{The data are not from a normal distribution}
+\]
+
+A small p-value (for example, below 0.05) is evidence against normality. A p-value above 0.05 does **not** prove that the data are normal; the test may have limited power, especially with small samples.
+
+For a paired t-test, assess the differences:
+
+```{r shapiro-differences}
+shapiro.test(training$Difference)
+
+qqnorm(training$Difference)
+qqline(training$Difference, col = "red")
+```
+
+For an independent test, inspect each group's distribution separately:
+
+```{r shapiro-groups}
+by(
+  employees$Salary,
+  employees$Department,
+  shapiro.test
+)
+```
+
+Do not rely on a normality test alone. Combine it with plots, knowledge of the data, and consideration of sample size and outliers.
+
+# 12. How to choose the correct t-test
+
+Ask these questions in order:
+
+1. Are you comparing one sample mean with a fixed reference value? Use a one-sample t-test.
+2. Are you comparing two separate groups of employees? Use an independent two-sample t-test.
+3. Are you comparing two measurements from the same employees or matched cases? Use a paired t-test.
+
+| HRM research question | Appropriate test |
+|---|---|
+| Is average salary different from RWF 500,000? | One-sample |
+| Is average salary different between Finance and HR employees? | Independent two-sample |
+| Did the same employees' performance scores change after training? | Paired |
+| Is average recruitment processing time different from 30 days? | One-sample |
+| Is job satisfaction different between permanent and contract employees? | Independent two-sample, if groups are independent |
+| Did employee productivity change before and after a new system? | Paired, if the same employees are measured |
+
+# 13. Common mistakes to avoid
+
+1. **Using a paired test for unrelated groups.** The same people or matched units must provide both measurements.
+2. **Using an independent test for before-and-after data from the same people.** This ignores the pairing.
+3. **Confusing a sample mean with a population mean.** The sample mean is an estimate; the hypotheses usually concern population parameters.
+4. **Treating p-value as the probability that H0 is true.** It is not.
+5. **Saying "accept H0."** Prefer "fail to reject H0."
+6. **Assuming statistical significance means practical importance.** Report the estimated difference and confidence interval.
+7. **Claiming causation from a simple before-and-after t-test.** A t-test alone does not rule out other explanations.
+8. **Selecting a one-tailed test after seeing the results.** The direction should be determined by the research question before analysis.
+9. **Using `var.equal = TRUE` without justification.** Welch's test is R's default for independent samples and does not require equal variances.
+
+# 14. Practical HRM exercises
+
+Try each exercise before looking at the suggested approach.
+
+## Exercise 1: One-sample t-test — salary
+
+An organization believes the average monthly salary is RWF 500,000. You collect salary data from 10 employees.
+
+```{r exercise-salary}
+exercise_salary <- c(
+  470000, 510000, 530000, 490000, 550000,
+  520000, 480000, 560000, 500000, 540000
+)
+```
+
+Tasks:
+
+1. Calculate the sample mean and standard deviation.
+2. State \(H_0\) and \(H_1\).
+3. Run a two-sided one-sample t-test against RWF 500,000.
+4. Record the t-statistic, degrees of freedom, p-value, and confidence interval.
+5. Write a conclusion using \(\alpha = 0.05\).
+
+Suggested starting code:
+
+```r
+mean(exercise_salary)
+sd(exercise_salary)
+
+t.test(
+  exercise_salary,
+  mu = 500000,
+  alternative = "two.sided"
+)
+```
+
+## Exercise 2: Independent t-test — department salaries
+
+The organization wants to compare salaries in two independent departments.
+
+```{r exercise-departments}
+exercise_departments <- data.frame(
+  Department = c(
+    rep("Administration", 6),
+    rep("Operations", 6)
+  ),
+  Salary = c(
+    450000, 470000, 460000, 480000, 455000, 475000,
+    520000, 540000, 530000, 550000, 525000, 545000
+  )
+)
+```
+
+Tasks:
+
+1. Calculate the mean salary for each department.
+2. State \(H_0\) and \(H_1\).
+3. Run Welch's independent two-sample t-test.
+4. Interpret the p-value and confidence interval.
+5. Explain why a difference in average salary does not, by itself, explain the reason for that difference.
+
+Suggested starting code:
+
+```r
+aggregate(
+  Salary ~ Department,
+  data = exercise_departments,
+  FUN = mean
+)
+
+t.test(
+  Salary ~ Department,
+  data = exercise_departments
+)
+```
+
+## Exercise 3: Paired t-test — training performance
+
+The same employees are assessed before and after training.
+
+```{r exercise-training}
+exercise_training <- data.frame(
+  Employee = 1:8,
+  Before = c(40, 45, 50, 42, 48, 44, 46, 43),
+  After = c(55, 60, 65, 58, 62, 57, 63, 59)
+)
+```
+
+Tasks:
+
+1. Calculate the average score before training.
+2. Calculate the average score after training.
+3. Create a `Difference` column as `After - Before`.
+4. State the two-sided hypotheses.
+5. Run a paired t-test.
+6. Extract the p-value and confidence interval.
+7. Write an HRM conclusion.
+
+Suggested starting code:
+
+```r
+exercise_training$Difference <-
+  exercise_training$After - exercise_training$Before
+
+mean(exercise_training$Before)
+mean(exercise_training$After)
+mean(exercise_training$Difference)
+
+t.test(
+  exercise_training$After,
+  exercise_training$Before,
+  paired = TRUE
+)
+```
+
+# 15. Quick knowledge check
+
+1. Which t-test compares one sample mean with a fixed reference value?
+2. Which t-test should be used when the same employees are measured before and after training?
+3. In a two-sided test, what does \(H_1: \mu_1 \ne \mu_2\) mean?
+4. If the p-value is 0.03 and \(\alpha = 0.05\), what is the statistical decision?
+5. Does a p-value of 0.20 prove that the two population means are equal?
+6. In a paired t-test, what data should be checked for approximate normality?
+7. Why does R use Welch's two-sample t-test by default?
+
+# 16. Final summary
+
+A t-test helps answer a focused question about means. The correct test depends on how the observations were collected:
+
+- **One-sample:** one sample compared with a reference mean.
+- **Independent two-sample:** two unrelated groups compared.
+- **Paired-sample:** two linked measurements compared through their differences.
+
+Always:
+
+1. Define the research question.
+2. State \(H_0\) and \(H_1\) using population parameters.
+3. Choose a one-tailed or two-tailed alternative based on the research question.
+4. Check whether the test is appropriate for the study design and data.
+5. Run the test in R.
+6. Interpret the p-value together with the estimate and confidence interval.
+7. Write a conclusion that answers the HRM question without claiming more than the analysis supports.
+
+# 17. Useful R commands reference
+
+| Purpose | R command |
+|---|---|
+| Sample mean | `mean(x)` |
+| Sample median | `median(x)` |
+| Sample standard deviation | `sd(x)` |
+| Sample variance | `var(x)` |
+| Summary statistics | `summary(x)` |
+| One-sample t-test | `t.test(x, mu = value)` |
+| Independent t-test | `t.test(y ~ group, data = df)` |
+| Paired t-test | `t.test(after, before, paired = TRUE)` |
+| One-sided greater test | `t.test(x, mu = value, alternative = "greater")` |
+| One-sided less test | `t.test(x, mu = value, alternative = "less")` |
+| Shapiro-Wilk normality test | `shapiro.test(x)` |
+| Histogram | `hist(x)` |
+| Q-Q plot | `qqnorm(x); qqline(x)` |

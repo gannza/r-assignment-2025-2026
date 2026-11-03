@@ -1,0 +1,164 @@
+---
+title: "Application of apply, sapply,vapply, lappay"
+author: "Ganza Jean Respice"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+  pdf_document:
+    toc: true
+    number_sections: true
+---
+
+
+
+
+```{r}
+marks <- matrix(
+  c(70, 80, 90,
+    60, 75, 85,
+    80, 90, 95),
+  nrow = 3,
+  byrow = TRUE
+)
+
+colnames(marks) <- c("Math", "English", "Science")
+
+rownames(marks) <- c("John", "Mary", "Peter")
+
+print(marks)
+``` 
+# Understanding apply()
+
+apply() is used to perform an operation on the rows or columns of a matrix or array.
+
+Understand the syntax:
+
+apply(X, MARGIN, FUN)
+
+X:	The matrix or array
+
+MARGIN:	Whether to operate on rows or columns
+
+FUN:	The function to apply
+
+
+```{r}
+apply(marks, 1, mean)
+```
+
+
+```{r}
+# Maximum marks for each subject
+apply(marks, 2, max)
+
+# Minimum marks for each subject
+apply(marks, 2, min)
+
+# Total marks for each student
+apply(marks, 1, sum)
+
+# Standard deviation for each subject
+apply(marks, 2, sd)
+```
+# Understanding lapply()
+
+It applies a function to every element of a list and always returns a list.
+
+```{r}
+
+marks <- list(
+  Math = c(70, 80, 90),
+  English = c(60, 75, 85),
+  Science = c(80, 90, 95)
+)
+
+print(marks)
+
+```   
+Understand the syntax:
+
+lapply(X, FUN)
+
+X: A list or other suitable object.
+
+FUN: The function to apply to each element.
+
+```{r}
+lapply(marks, mean)
+```
+lapply() always returns a list, even when the results are just individual numbers.
+
+# Understanding sapply()
+
+It works similarly to lapply(), but attempts to simplify the output.
+
+```{r}
+marks <- list(
+  Math = c(70, 80, 90),
+  English = c(60, 75, 85),
+  Science = c(80, 90, 95)
+) 
+```
+
+
+Calculate the mean
+
+```{r}
+sapply(marks, mean)
+```
+
+Notice the difference:
+
+- lapply() returns a list.
+
+- sapply() simplifies the result into a numeric vector.
+
+sapply() tries to simplify the output. It does not guarantee a vector; depending on the result, it can return a matrix or list.
+
+
+# Understanding vapply()
+
+vapply() is similar to sapply(), but it is more strict.
+
+Understand the syntax:
+
+vapply(X, FUN, FUN.VALUE)
+
+
+X: Input list
+FUN:	Function to apply
+FUN.VALUE:	Expected output type and size
+
+Example: Calculate the mean
+
+```{r}
+vapply(marks, mean, numeric(1))
+```
+
+Why numeric(1)?
+
+Because the mean function returns one numerical value for each subject.
+
+```{r}
+vapply(marks, function(x) {
+
+  c(
+    Mean = mean(x),
+    Median = median(x),
+    Minimum = min(x),
+    Maximum = max(x),
+    Variance = var(x),
+    Standard_Deviation = sd(x)
+  )
+
+}, numeric(6))
+```
+
+Why numeric(6)?
+
+Because our function returns six numerical values for each subject.
+
+
